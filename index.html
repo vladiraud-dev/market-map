@@ -47,6 +47,8 @@ input[type=number]{width:64px}
 .seg2 button{position:relative;background:none;border:0;border-radius:7px;padding:0 13px;color:var(--mut);cursor:pointer;font-size:13.5px;white-space:nowrap}
 .seg2 button:hover{color:var(--tx)}
 .seg2 button.on{background:var(--card2);color:var(--tx);box-shadow:inset 0 0 0 1px var(--line2)}
+.seg2 button:disabled{opacity:.35;cursor:not-allowed}
+.seg2 button:disabled .badge{display:none}
 #viewTabs button.on{box-shadow:inset 0 -2px 0 var(--acc),inset 0 0 0 1px var(--line2)}
 .srch{display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:9px;height:36px;padding:0 10px;color:var(--dim)}
 .srch input{background:transparent;border:0;width:120px;font-size:13px;padding:0}
@@ -329,7 +331,7 @@ h4{margin:0;font-size:12px;color:var(--mut);font-weight:600;text-transform:upper
 <header id="top">
   <div class="brand">
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 17 9 9l4 5 3-4 5 7" stroke="#ffb547" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="9" r="2" fill="#22c3a6"/><circle cx="16" cy="10" r="2" fill="#f0506e"/></svg>
-    <span title="Версия 26">Market<b>Map</b></span>
+    <span title="Версия 27">Market<b>Map</b></span>
   </div>
   <div class="sel" title="Биржа"><i class="dot" id="connDot"></i><select id="selEx"><option value="binance">Binance</option><option value="bybit">Bybit</option><option value="okx">OKX</option><option value="bitget">Bitget</option></select></div>
   <div class="seg2" id="segType"><button data-t="futures">Фьючерсы</button><button data-t="spot" title="Спотовый рынок">Спот</button></div>
@@ -2951,6 +2953,10 @@ function setupUniverse(m) {
   return SYM[m].list.filter(r => (r.vol || 0) >= mv && inSpotScope(m, r)).sort((a, b) => (b.vol || 0) - (a.vol || 0)).slice(0, 250);
 }
 async function setupScan(force) {
+  if (!MK[S.markets[0]].fut) { // сетапы и снимки — только для фьючерсов (Binance, Bybit, OKX)
+    if (SETUP.list.length) { SETUP.list = []; SETUP.prog = { done: 0, total: 0 }; renderSetups(); }
+    return;
+  }
   if (SETUP.busy) return; SETUP.busy = true;
   const m = S.markets[0], tf = S.setTf, tfMs = TF_MS[tf], one = tf === '1m';
   try {
@@ -3325,6 +3331,8 @@ async function idbOp(mode, fn) {
 async function snapsLoad() {
   const all = await idbOp('readonly', st => st.getAll());
   SNAPS.list = (all || []).sort((a, b) => b.t - a.t);
+  // снимки спота больше не нужны — удаляем
+  SNAPS.list = SNAPS.list.filter(q => { if (MK[q.m] && MK[q.m].fut) return true; idbOp('readwrite', st => st.delete(q.id)); return false; });
   { // старые дубли (несколько снимков одной монеты) — оставляем самый свежий
     const seen = new Set();
     SNAPS.list = SNAPS.list.filter(q => { const key = q.m + '|' + normBase(q.base || q.s); if (seen.has(key)) { idbOp('readwrite', st => st.delete(q.id)); return false; } seen.add(key); return true; });
@@ -3333,6 +3341,7 @@ async function snapsLoad() {
 }
 const fmtDT = t => { const d = new Date(t); return pad2(d.getDate()) + '.' + pad2(d.getMonth() + 1) + ' ' + pad2(d.getHours()) + ':' + pad2(d.getMinutes()); };
 function maybeSnap(st) {
+  if (!MK[st.m] || !MK[st.m].fut) return;
   const key = setKey(st);
   const lt = SNAPS.taken.get(key) || 0;
   if (Date.now() - lt < 2 * 3600e3) return;
@@ -3341,6 +3350,7 @@ function maybeSnap(st) {
   takeSnapshot(st);
 }
 function takeSnapshot(st) {
+  if (!MK[st.m] || !MK[st.m].fut) return;
   let host, ch;
   try {
     const W = 760, H = 430;
@@ -3550,12 +3560,20 @@ const SORT_HINT = {
 const GRIDS = ['3x1', '3x2', '3x3', '4x3', '5x3', '6x4'];
 const gridLab = gs => { const [c, r] = gs.split('x').map(Number), n = c * r; return `${n} ${n === 3 || n === 24 ? 'графика' : 'графиков'}`; };
 function renderTop() {
-  const m = S.markets[0], [ex, ty] = m.split('-'), v = S.view;
+  const m = S.markets[0], [ex, ty] = m.split('-'); let v = S.view;
   $('#selEx').value = ex;
   $$('#segType button').forEach(b => b.classList.toggle('on', b.dataset.t === ty));
   $('#segType [data-t="futures"]').style.display = MK[ex + '-futures'] ? '' : 'none'; // у Bitget — только спот
   $('#spotOnlyWrap').style.display = MK[m].fut ? 'none' : ''; $('#btnSpotOnly').classList.toggle('on', !!S.spotOnly);
   $('#btnSpotOnly').textContent = S.spotOnly ? '✓ Без фьючей' : 'Без фьючей';
+  { // «Сетапы» и «Снимки» — только на фьючерсах; на споте вкладки неактивны
+    const fut = MK[m].fut;
+    $$('#viewTabs [data-v="setups"], #viewTabs [data-v="snaps"]').forEach(b => {
+      if (b.dataset.t0 == null) b.dataset.t0 = b.title || '';
+      b.disabled = !fut; b.title = fut ? b.dataset.t0 : 'Сетапы и снимки — только для фьючерсов Binance, Bybit и OKX. Переключись на «Фьючерсы»';
+    });
+    if (!fut && (v === 'setups' || v === 'snaps')) { S.view = v = 'map'; saveS(); }
+  }
   $$('#viewTabs button').forEach(b => b.classList.toggle('on', b.dataset.v === v));
   $('#gridWrap').hidden = v !== 'map'; $('#setWrap').hidden = v !== 'setups'; $('#snapWrap').hidden = v !== 'snaps'; $('#ovWrap').hidden = v !== 'ov';
   if (v !== 'ov' && OVP.m) OVP.stale = true;
@@ -3790,7 +3808,7 @@ function tick() {
 }
 
 /* ---------- автообновление: страница сама подхватывает новую версию ---------- */
-const APP_V = '26';
+const APP_V = '27';
 window.__mmVersion = v => {
   if (!v || v === APP_V) return;
   const b = $('#banner'); b.hidden = false; b.textContent = 'Вышла новая версия сайта — обновляю страницу…';
