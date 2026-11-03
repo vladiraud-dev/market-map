@@ -33,8 +33,8 @@ input[type=number]{width:64px}
 #top{height:54px;flex:none;display:flex;align-items:center;gap:8px;padding:0 12px;background:var(--top);border-bottom:1px solid var(--line);overflow-x:auto;overflow-y:hidden;scrollbar-width:none}
 #top::-webkit-scrollbar{display:none}
 #top>*{flex-shrink:0}
-@media (max-width:1750px){#mdSt{display:none}.srch input{width:80px}}
-@media (max-width:1560px){.brand span{display:none}.seg2 button{padding:0 9px;font-size:13px}.sel select{font-size:13px}.sel{padding-left:8px}#top{gap:6px}}
+@media (max-width:1750px){#mdSt{display:none}#qWrap input{width:80px}}
+@media (max-width:1560px){.brand span{display:none}.seg2 button{padding:0 9px;font-size:13px}.sel select{font-size:13px}.sel{padding-left:8px}#top{gap:6px}.sel .lab{display:none}#selMinVol{max-width:92px}#qWrap input{width:60px}#btnRefresh{display:none !important}#gridSelWrap svg{display:none}}
 @media (max-width:1380px){#btnRefresh,#btnFreeze{display:none !important}.sel .lab{display:none}}
 .brand{display:flex;align-items:center;gap:8px;font-weight:800;font-size:15px;letter-spacing:.3px;margin-right:6px;white-space:nowrap}
 .brand b{color:var(--acc)}
@@ -75,7 +75,26 @@ input[type=number]{width:64px}
 #gridMsg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;color:var(--mut);padding:40px;text-align:center;font-size:14px;line-height:1.6;pointer-events:none}
 #gridMsg .btn{pointer-events:auto}
 #gridMsg:empty{display:none}
-#gridWrap[hidden],#setWrap[hidden],#snapWrap[hidden]{display:none}
+#gridWrap[hidden],#setWrap[hidden],#snapWrap[hidden],#ovWrap[hidden]{display:none}
+#ovWrap{flex:1;min-height:0;display:flex}
+.ovl{width:min(48%,820px);min-width:520px;display:flex;flex-direction:column;border-right:1px solid var(--line);background:var(--top);min-height:0}
+.ovh,.ovr{display:grid;grid-template-columns:var(--ovcols);gap:6px;align-items:center;padding:0 12px}
+.ovh{height:34px;flex:none;color:var(--dim);font-size:11px;border-bottom:1px solid var(--line)}
+.ovh span{cursor:pointer;user-select:none;-webkit-user-select:none;white-space:nowrap}
+.ovh span:hover{color:var(--tx)}
+.ovh span.on{color:var(--acc);font-weight:600}
+.ovb{flex:1;overflow:auto;min-height:0}
+.ovr{height:30px;border-bottom:1px solid var(--line);cursor:pointer;font-family:var(--mono);font-size:12px;color:var(--tx)}
+.ovr:hover{background:var(--card)}
+.ovr.sel{background:#2a2410;box-shadow:inset 3px 0 0 var(--acc)}
+.ovr b{font-family:var(--sans);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ovr .num,.ovh .num{text-align:right}
+.ovr .up{color:var(--up)} .ovr .dn{color:var(--dn)} .ovr .mut{color:var(--mut)} .ovr .hot{color:#f5a142} .ovr .yl{color:#f5d142} .ovr .oi{color:#58a6ff}
+.ovf{flex:none;height:26px;line-height:26px;padding:0 12px;color:var(--dim);font-size:11px;border-top:1px solid var(--line)}
+.ovc{flex:1;min-width:0;display:flex;position:relative}
+.ovEmpty{margin:auto;color:var(--dim);font-size:14px}
+#ovChart .mbox{width:100%;height:100%;border-radius:0;border:0;box-shadow:none}
+#ovChart #mClose{display:none}
 
 /* ---------- ячейка графика ---------- */
 .cell{position:relative;background:var(--cell);min-height:0;min-width:0;overflow:hidden}
@@ -91,6 +110,8 @@ input[type=number]{width:64px}
 .pl.n{color:#c3c5cc;border-color:#3b3c44}
 .pl.c{color:#58a6ff;border-color:#25507e}
 .pl.g{color:var(--dim);border-color:var(--line2)}
+.pl.cp{font-size:12px;line-height:19px;padding:0 9px;border-width:1.5px;background:rgba(18,19,23,.78)}
+.pl.cp.n{color:#c9cbd2;border-color:#45464e}
 .pl.tl{color:#fff;border-color:transparent;background:#1f9d6c}
 .pl.ts{color:#fff;border-color:transparent;background:#d93b4f}
 .cell .lvb{color:var(--acc);font-size:11px;font-family:var(--mono);line-height:18px}
@@ -287,12 +308,14 @@ h4{margin:0;font-size:12px;color:var(--mut);font-weight:600;text-transform:upper
 <header id="top">
   <div class="brand">
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 17 9 9l4 5 3-4 5 7" stroke="#ffb547" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="9" r="2" fill="#22c3a6"/><circle cx="16" cy="10" r="2" fill="#f0506e"/></svg>
-    <span title="Версия 22">Market<b>Map</b></span>
+    <span title="Версия 23">Market<b>Map</b></span>
   </div>
   <div class="sel" title="Биржа"><i class="dot" id="connDot"></i><select id="selEx"><option value="binance">Binance</option><option value="bybit">Bybit</option><option value="okx">OKX</option><option value="bitget">Bitget</option></select></div>
-  <div class="seg2" id="segType"><button data-t="futures">Фьючерсы</button><button data-t="spot" title="Только монеты без фьючерсов: нет ни на Binance, ни на Bybit">Спот</button></div>
+  <div class="seg2" id="segType"><button data-t="futures">Фьючерсы</button><button data-t="spot" title="Спотовый рынок">Спот</button></div>
+  <div class="seg2" id="spotOnlyWrap" title="Вкл — только монеты, у которых НЕТ фьючерсов ни на Binance, ни на Bybit (самые «дикие» споты). Выкл — все монеты спота"><button id="btnSpotOnly">Без фьючей</button></div>
   <div class="seg2" id="viewTabs">
     <button data-v="map">Карта рынка</button>
+    <button data-v="ov" title="Все монеты списком: изменения, объёмы, OI. Клик по монете — график справа, на нём можно рисовать">Обзор</button>
     <button data-v="setups">Сетапы<span class="badge" id="setCnt"></span></button>
     <button data-v="snaps" title="Статичные снимки сетапов в момент появления">Снимки<span class="badge" id="snapCnt"></span></button>
   </div>
@@ -311,6 +334,7 @@ h4{margin:0;font-size:12px;color:var(--mut);font-weight:600;text-transform:upper
 <main id="main">
   <div id="banner" hidden></div>
   <section id="gridWrap"><div id="grid"></div><div id="gridMsg"></div></section>
+  <section id="ovWrap" hidden><div class="ovl"><div class="ovh" id="ovHead"></div><div class="ovb" id="ovBody"></div><div class="ovf" id="ovFoot"></div></div><div class="ovc" id="ovChart"><div class="ovEmpty">Выбери монету в списке слева</div></div></section>
   <section id="setWrap" hidden>
     <div id="setGrid"></div>
     <aside id="oiCol"><div class="oih">Залив OI <small id="oiColWin"></small></div><div id="oiList"></div></aside>
@@ -346,6 +370,7 @@ h4{margin:0;font-size:12px;color:var(--mut);font-weight:600;text-transform:upper
   <div class="tab" id="tab-oi">
     <div class="oiset">
       <label class="row"><input type="checkbox" data-k="oi.on"><b>Следить за ростом открытого интереса</b></label>
+      <label class="row"><input type="checkbox" data-k="oi.notify">Уведомлять о заливе OI (звук и всплывающее окно)</label>
       <div class="row"><label><input type="checkbox" data-k="oi.bf">Binance Futures</label><label><input type="checkbox" data-k="oi.by">Bybit Futures</label><label><input type="checkbox" data-k="oi.ok">OKX Futures</label></div>
       <div class="row">Алерт: рост OI ≥ <input type="number" data-k="oi.pct" step="0.5" min="0.1" style="width:56px">% за
         <select data-k="oi.win"><option value="5">5</option><option value="10">10</option><option value="15">15</option><option value="30">30</option><option value="60">60</option></select>мин</div>
@@ -531,8 +556,8 @@ const DEF = {
   sort: 'interest', period: '5m', resort: 10, frozen: false, dedupe: true, minVol: 0, spotOnly: true,
   onlyFav: false, onlyLevels: false, panel: false, tab: 'feed', feedFilter: 'all',
   sound: true, volume: 0.7, notif: true, tgOn: false, tgToken: '', tgChat: '', approach: 0,
-  oi: { on: true, bf: true, by: true, ok: true, pct: 3, win: 15, minVol: 3e6, cool: 30 },
-  oiSort: { k: 'pct', d: -1 }, tradfi: false,
+  oi: { on: true, bf: true, by: true, ok: true, notify: false, pct: 3, win: 15, minVol: 3e6, cool: 30 },
+  oiSort: { k: 'pct', d: -1 }, ovSort: { k: 'v24', d: -1 }, tradfi: false,
 };
 const S = (() => {
   const s = LS.get('settings', {});
@@ -550,9 +575,10 @@ const S = (() => {
   if (r.v < 6) Object.assign(r, { v: 6, setGrid: '3x2', view: r.view === 'setups' ? 'setups' : 'map' });
   if (r.v < 8) Object.assign(r, { v: 8, resort: 10 });
   if (r.v < 9) Object.assign(r, { v: 9, setTf: '5m' });
-  r.sort = 'interest'; if (!['map', 'setups', 'snaps'].includes(r.view)) r.view = 'map'; if (!['3x1', '3x2', '3x3', '4x3', '5x3', '6x4'].includes(r.setGrid)) r.setGrid = '3x2'; if (!['3x1', '3x2', '3x3', '4x3', '5x3', '6x4'].includes(r.grid)) r.grid = '3x3'; if (!TF_MS_OK.includes(r.tf)) r.tf = '5m'; if (!['1m', '5m', '15m', '1h'].includes(r.setTf)) r.setTf = '5m';
+  r.sort = 'interest'; if (!['map', 'ov', 'setups', 'snaps'].includes(r.view)) r.view = 'map'; if (!['3x1', '3x2', '3x3', '4x3', '5x3', '6x4'].includes(r.setGrid)) r.setGrid = '3x2'; if (!['3x1', '3x2', '3x3', '4x3', '5x3', '6x4'].includes(r.grid)) r.grid = '3x3'; if (!TF_MS_OK.includes(r.tf)) r.tf = '5m'; if (!['1m', '5m', '15m', '1h'].includes(r.setTf)) r.setTf = '5m';
   if (!r.oiSort || !['s', 'pct', 'pxp', 'usd'].includes(r.oiSort.k) || ![1, -1].includes(r.oiSort.d)) r.oiSort = { k: 'pct', d: -1 };
-  r.markets = r.markets.slice(0, 1); r.spotOnly = true; r.onlyFav = false; r.onlyLevels = false;
+  if (!r.ovSort || ![1, -1].includes(r.ovSort.d)) r.ovSort = { k: 'v24', d: -1 };
+  r.markets = r.markets.slice(0, 1); r.spotOnly = r.spotOnly !== false; r.onlyFav = false; r.onlyLevels = false;
   if (!/^\d+x\d+$/.test(r.grid)) r.grid = '3x3';
   { const [gc, gr] = r.grid.split('x').map(Number); r.count = gc * gr; }
   return r;
@@ -728,13 +754,14 @@ async function byInstruments(cat) {
     const out = [];
     let cursor = '';
     for (let page = 0; page < 6; page++) {
-      const q = `/v5/market/instruments-info?category=${cat}` + (cat === 'spot' ? '' : '&limit=1000') + (cursor ? '&cursor=' + encodeURIComponent(cursor) : '');
+      const q = `/v5/market/instruments-info?category=${cat}` + (cat === 'spot' ? '' : '&limit=1000') + (cursor ? '&cursor=' + encodeURIComponent(cursor) : ''); // у спота пагинации нет
       const r = await by(q);
+      const n0 = out.length;
       out.push(...(r.list || []));
       cursor = r.nextPageCursor;
-      if (!cursor || cat === 'spot') break;
+      if (!cursor || out.length === n0) break;
     }
-    return out;
+    const seen = new Set(); return out.filter(x => !seen.has(x.symbol) && seen.add(x.symbol));
   });
 }
 const goodBase = b => b && !STABLE.has(b) && !/^[A-Z]{2,}(BULL|BEAR)$/.test(b) && !/\d[LS]$/.test(b);
@@ -756,8 +783,7 @@ function isTradFiMeta(x) {
   if (x.contractType && /TRADIFI/i.test(x.contractType)) return true;
   if (x.instCategory != null && /^[3-9]$/.test(String(x.instCategory))) return true; // OKX: 3 акции, 4 металлы, 5 сырьё, 6 форекс, 7 облигации
   if (x.underlyingType && /EQUITY|COMMODITY|FOREX|ETF/i.test(x.underlyingType)) return true;
-  for (const k of ['symbolType', 'category', 'areaSymbol', 'tag', 'tags', 'assetType']) { const v = x[k]; if (v && /xstock|stock|commod|equit|etf|forex|metal|tradfi/i.test(Array.isArray(v) ? v.join(' ') : String(v))) return true; }
-  if (x.xstockMultiplier != null && x.xstockMultiplier !== '' && x.xstockMultiplier !== '0') return true;
+  if (x.symbolType && /xstock|stock|commod|equit|etf|forex|metal|tradfi/i.test(String(x.symbolType))) return true; // Bybit
   return false;
 }
 // стейблкоины: по списку, по названию (…USD…, EUR-токены) и по поведению (цена ≈ $1 и за сутки почти не двигалась)
@@ -1794,11 +1820,11 @@ function makeCard(m, s) {
   const r = rec(m, s), k = m + '|' + s;
   const el = document.createElement('div');
   el.className = 'cell';
-  el.innerHTML = `<div class="cc"></div><div class="pills"><span class="pin" title="Закреплена">★</span><span class="lvb" title="Уровни с алертом"></span></div><div class="htools"><button data-a="pin" title="Закрепить первой">★</button><button data-a="copy" title="Скопировать тикер">⧉</button><a data-a="ex" target="_blank" rel="noopener" title="Открыть на бирже">${exAbbr(m)}</a><a data-a="tv" target="_blank" rel="noopener" title="Открыть в TradingView">TV</a></div><div class="ld">загрузка…</div>`;
+  el.innerHTML = `<div class="cc"></div><div class="pills">${'<span class="pl cp"></span>'.repeat(6)}<span class="pin" title="Закреплена">★</span><span class="lvb" title="Уровни с алертом"></span></div><div class="htools"><button data-a="pin" title="Закрепить первой">★</button><button data-a="copy" title="Скопировать тикер">⧉</button><a data-a="ex" target="_blank" rel="noopener" title="Открыть на бирже">${exAbbr(m)}</a><a data-a="tv" target="_blank" rel="noopener" title="Открыть в TradingView">TV</a></div><div class="ld">загрузка…</div>`;
   const card = { m, s, k, tf: S.tf, el, r, vis: false, hd: true, loaded: false, dead: false, queued: false, leftAt: 0 };
   card.q = { pl: [...el.querySelectorAll('.pills .pl')], lvb: $('.lvb', el), pin: $('.pin', el), pinBtn: $('[data-a=pin]', el), ld: $('.ld', el) };
   card.chart = new Chart($('.cc', el), {
-    mini: true, bars: 80, asleep: true, padTop: 10,
+    mini: true, bars: 80, asleep: true, padTop: 30,
     onAdd: (p, cur) => addLevel(m, s, p, cur),
     onMove: (id, p, cur) => moveLevel(id, p, cur),
     onDel: id => delLevel(id),
@@ -1929,8 +1955,17 @@ async function buildGrid(reset) {
   if (!items.length && q) { // поиск ничего не нашёл — объясняем почему
     const m0 = mks[0], hits = ((ok[0] || {}).list || []).filter(r => r.s.includes(q) || (r.base || '').toUpperCase().includes(q)).slice(0, 5);
     why = hits.length
-      ? hits.map(r => `${esc(r.base || r.s)} — есть фьючерсы на Binance или Bybit, поэтому её нет в «Споте». Смотри Binance или Bybit → «Фьючерсы».`).join('<br>')
+      ? hits.map(r => `${esc(r.base || r.s)} — есть фьючерсы на Binance или Bybit, а сейчас включено «Без фьючей». Выключи его вверху — и монета появится.`).join('<br>')
       : `«${esc(q)}» не найдена на ${esc(MK[m0].label)}.` + (S.tradfi ? '' : ' Если это токенизированная акция — акции скрыты (Настройки → «Показывать акции и TradFi»).');
+  }
+  if (!items.length && !q && !why && ok[0]) { // пусто — объясняем, что именно отсеялось
+    const m0 = mks[0], L = ok[0].list || [], mv = minVolFor(m0);
+    const withFut = L.filter(r => !inSpotScope(m0, r)).length, low = L.filter(r => inSpotScope(m0, r) && (r.vol || 0) < mv).length;
+    why = !L.length
+      ? `${esc(MK[m0].label)}: биржа не вернула ни одной монеты. Пришли скриншот — разберусь.`
+      : `${esc(MK[m0].label)}: всего ${L.length} монет.` + (withFut ? ` У ${withFut} есть фьючерсы на Binance или Bybit — они скрыты, потому что включено «Без фьючей».` : '') + (low ? ` Ещё ${low} — с объёмом ниже фильтра ${volLab(mv)}.` : '')
+        + '<br>' + (withFut ? '<button class="btn" style="margin:12px 6px 0" onclick="window.__mmSpotAll && window.__mmSpotAll()">Показать все монеты спота</button>' : '')
+        + (low ? '<button class="btn" style="margin:12px 6px 0" onclick="window.__mmVol0 && window.__mmVol0()">Показать с любым объёмом</button>' : '');
   }
   setGridMsg(items.length ? '' : why || (S.onlyFav ? 'В избранном пока пусто — отметь монеты звёздочкой ★' : S.onlyLevels ? 'На выбранных рынках пока нет монет с уровнями' : 'Нет монет под этот фильтр'));
   refreshSubsSoon();
@@ -1957,6 +1992,33 @@ function updHdr(c) {
   c.q.lvb.textContent = nl ? '◆' + nl : '';
   const fav = FAVS.has(c.k);
   c.q.pin.style.display = fav ? '' : 'none'; c.q.pinBtn.classList.toggle('on', fav);
+  const ps = cardPills(c.m, c.s);
+  c.q.pl.forEach((el, i) => {
+    const x = ps[i]; if (!x) { el.style.display = 'none'; return; }
+    el.style.display = ''; if (el._t !== x.t) { el.textContent = x.t; el._t = x.t; }
+    const cls = 'pl cp ' + x.c; if (el.className !== cls) el.className = cls; el.title = x.h;
+  });
+}
+// компактные метки на карточке: только числа, цвет — направление/сила (как на cryptoscreener)
+function fmtShort(v) {
+  if (v == null || !isFinite(v)) return '';
+  const a = Math.abs(v);
+  return a >= 1e9 ? +(v / 1e9).toFixed(2) + 'B' : a >= 1e6 ? +(v / 1e6).toFixed(a >= 1e8 ? 0 : a >= 1e7 ? 0 : 1) + 'M' : a >= 1e3 ? Math.round(v / 1e3) + 'K' : String(Math.round(v));
+}
+function cardPills(m, s) {
+  const r = rec(m, s), out = [];
+  const ch5 = calcMetric(m, s, 'chgUp', '5m');
+  if (ch5 != null && isFinite(ch5)) out.push({ t: Math.abs(ch5).toFixed(2) + (Math.abs(ch5) >= 3 ? ' 🚀' : ''), c: ch5 >= 0 ? 'gu' : 'gd', h: 'Изменение за 5 минут: ' + fmtPct(ch5, 2) });
+  const c24 = r.chg;
+  if (c24 != null && isFinite(c24)) out.push({ t: Math.abs(c24).toFixed(2) + (Math.abs(c24) >= 20 ? ' 🚀' : ''), c: c24 >= 0 ? 'gu' : 'gd', h: 'Изменение за 24 часа: ' + fmtPct(c24, 2) });
+  const nt = calcMetric(m, s, 'natr5');
+  if (nt != null && isFinite(nt)) out.push({ t: nt.toFixed(2) + (nt >= 2 ? ' 🔥' : ''), c: nt >= 1.2 ? 'y' : 'n', h: 'NATR 5м — средний размах 5-минутной свечи, %' });
+  if (r.vol) out.push({ t: fmtShort(r.vol), c: r.vol >= 100e6 ? 'v' : 'n', h: 'Объём за 24 часа, $' });
+  const v5 = calcMetric(m, s, 'vol', '5m'), sp = calcMetric(m, s, 'spike', '5m');
+  if (v5 != null && isFinite(v5)) out.push({ t: fmtShort(v5), c: sp >= 2 ? 'o' : 'n', h: 'Объём за 5 минут, $' + (sp >= 2 ? ` — в ${sp.toFixed(1)} раза выше обычного` : '') });
+  const oi = MK[m].fut ? dOI(m, s) : null;
+  if (oi != null && oi >= 1) out.push({ t: 'OI ' + oi.toFixed(1), c: 'c', h: `Рост открытого интереса за ${S.oi.win} мин, %` });
+  return out;
 }
 
 /* =====================================================================
@@ -1966,7 +2028,7 @@ const MODAL = { open: false, m: null, s: null, tf: '5m', chart: null, tok: 0, lo
 function openChart(m, s, opt) {
   if (!MK[m]) return;
   MODAL.m = m; MODAL.s = s; MODAL.tf = (opt && opt.tf) || S.tf; MODAL.open = true; MODAL.setup = (opt && opt.setup) || null;
-  $('#modal').hidden = false;
+  if (!MODAL.docked) $('#modal').hidden = false;
   if (!MODAL.chart) {
     MODAL.chart = new Chart($('#mChart'), {
       mini: false,
@@ -1998,7 +2060,7 @@ function setTool(t) {
   $$('#mTools [data-tool]').forEach(b => b.classList.toggle('on', b.dataset.tool === t));
 }
 function closeChart() {
-  if (!MODAL.open) return;
+  if (!MODAL.open || MODAL.docked) return;
   MODAL.open = false; MODAL.tok++; $('#modal').hidden = true;
   refreshSubs();
 }
@@ -2380,7 +2442,7 @@ function oiEval(m, s, a, canFire) {
   const pxp = bp && cur[2] ? (cur[2] / bp - 1) * 100 : null;
   const d = { pct, pxp, usd: cur[1] * (cur[2] || 0), t: cur[0] };
   OIM.delta[m].set(s, d);
-  if (canFire && pct >= S.oi.pct) {
+  if (canFire && S.oi.notify && pct >= S.oi.pct) { // уведомления о заливе OI — только если включены
     const k = m + '|' + s; const lt = OIM.last.get(k) || 0;
     if (cur[0] - lt >= S.oi.cool * 60e3) { OIM.last.set(k, cur[0]); saveOiLast(); fireOI(m, s, d); }
   }
@@ -2914,6 +2976,63 @@ function setupLive() {
     c.chart.data = B; c.chart.dirty = true;
   }
 }
+/* =====================================================================
+   ОБЗОР РЫНКА: все монеты списком + большой график справа (на нём можно рисовать)
+   ===================================================================== */
+const OV = { sel: null, rows: [] };
+const OV_COLS = [
+  ['b', 'Монета', 0], ['p', 'Цена', 1], ['c5', '5м %', 1], ['c15', '15м %', 1], ['c60', '1ч %', 1], ['c24', '24ч %', 1],
+  ['v24', 'Объём 24ч', 1], ['v5', 'Объём 5м', 1], ['sp', 'Всплеск', 1], ['nt', 'NATR', 1], ['oi', 'OI %', 1],
+];
+// встраиваем окно большого графика в правую часть «Обзора» (и возвращаем обратно при выходе)
+function ovDock(on) {
+  const box = $('.mbox', $('#modal')) || $('.mbox', $('#ovChart')); if (!box) return;
+  if (on && !MODAL.docked) {
+    $('#ovChart').appendChild(box); MODAL.docked = true; $('#modal').hidden = true;
+    if (MODAL.chart) MODAL.chart.resize();
+  } else if (!on && MODAL.docked) {
+    MODAL.docked = false; $('#modal').appendChild(box);
+    if (MODAL.open) { MODAL.open = false; MODAL.tok++; refreshSubs(); }
+  }
+  const em = $('.ovEmpty', $('#ovChart')); if (em) em.style.display = on && MODAL.open ? 'none' : '';
+}
+function ovSelect(s, scroll) {
+  const m = S.markets[0]; if (!s) return;
+  OV.sel = s;
+  ovDock(true);
+  openChart(m, s, { tf: MODAL.tf || S.tf });
+  const em = $('.ovEmpty', $('#ovChart')); if (em) em.style.display = 'none';
+  $$('#ovBody .ovr').forEach(r => r.classList.toggle('sel', r.dataset.s === s));
+  if (scroll) { const el = $(`#ovBody .ovr[data-s="${CSS.escape(s)}"]`); if (el) el.scrollIntoView({ block: 'nearest' }); }
+}
+function ovRender(pick) {
+  if (S.view !== 'ov') return;
+  const m = S.markets[0], fut = MK[m].fut, mv = minVolFor(m), q = QUERY;
+  const cols = OV_COLS.filter(c => fut || c[0] !== 'oi');
+  $('#ovWrap').style.setProperty('--ovcols', 'minmax(70px,1.2fr) minmax(64px,1fr) ' + cols.slice(2).map(c => c[0] === 'v24' || c[0] === 'v5' ? 'minmax(52px,.9fr)' : 'minmax(44px,.75fr)').join(' '));
+  const so = S.ovSort.k === 'oi' && !fut ? { k: 'v24', d: -1 } : S.ovSort;
+  const rows = [];
+  for (const r of SYM[m].list) {
+    if (!inSpotScope(m, r)) continue;
+    if (q) { if (!r.s.includes(q) && !(r.base || '').toUpperCase().includes(q)) continue; }
+    else if ((r.vol || 0) < mv) continue;
+    const g = (k, per) => { const v = calcMetric(m, r.s, k, per); return v != null && isFinite(v) ? v : null; };
+    rows.push({ s: r.s, b: r.base || symBase(r.s), p: r.price, dec: decOf(r), c5: g('chgUp', '5m'), c15: g('chgUp', '15m'), c60: g('chgUp', '1h'), c24: isFinite(r.chg) ? r.chg : null,
+      v24: r.vol || null, v5: g('vol', '5m'), sp: g('spike', '5m'), nt: g('natr5'), oi: fut ? dOI(m, r.s) : null });
+  }
+  const val = x => so.k === 'p' ? x.p : x[so.k];
+  rows.sort((a, b) => so.k === 'b' ? a.b.localeCompare(b.b) * so.d : ((val(a) ?? -Infinity) - (val(b) ?? -Infinity)) * so.d || (b.v24 || 0) - (a.v24 || 0));
+  OV.rows = rows;
+  $('#ovHead').innerHTML = cols.map(c => `<span data-k="${c[0]}" class="${c[2] ? 'num' : ''}${so.k === c[0] ? ' on' : ''}" title="Сортировать">${c[1]}${so.k === c[0] ? (so.d < 0 ? ' ↓' : ' ↑') : ''}</span>`).join('');
+  const pc = v => v == null ? '<span class="num mut">—</span>' : `<span class="num ${v >= 0 ? 'up' : 'dn'}">${(v > 0 ? '+' : '') + v.toFixed(2)}</span>`;
+  const html = rows.map(x => `<div class="ovr${x.s === OV.sel ? ' sel' : ''}" data-s="${esc(x.s)}"><b>${esc(x.b)}</b><span class="num">${x.p ? fmtP(x.p, x.dec) : '—'}</span>${pc(x.c5)}${pc(x.c15)}${pc(x.c60)}${pc(x.c24)}`
+    + `<span class="num${x.v24 >= 100e6 ? ' yl' : ''}">${fmtShort(x.v24) || '—'}</span><span class="num${x.sp >= 2 ? ' hot' : ' mut'}">${fmtShort(x.v5) || '—'}</span>`
+    + `<span class="num${x.sp >= 2 ? ' hot' : ' mut'}">${x.sp != null ? '×' + x.sp.toFixed(1) : '—'}</span><span class="num${x.nt >= 1.5 ? ' yl' : ''}">${x.nt != null ? x.nt.toFixed(2) : '—'}</span>`
+    + (fut ? `<span class="num${x.oi >= 1 ? ' oi' : x.oi != null && x.oi < 0 ? ' dn' : ' mut'}">${x.oi != null ? (x.oi > 0 ? '+' : '') + x.oi.toFixed(1) : '—'}</span>` : '') + '</div>').join('');
+  const body = $('#ovBody'); if (body._h !== html) { body.innerHTML = html || `<div class="empty" style="padding:30px;text-align:center;color:var(--dim)">${q ? 'Ничего не найдено' : 'Нет монет под фильтр объёма — уменьши «Объём от»'}</div>`; body._h = html; }
+  $('#ovFoot').textContent = `${MK[m].label} · монет: ${rows.length} · ↑↓ — следующая/предыдущая монета · клик по заголовку — сортировка`;
+  if ((pick || !OV.sel || !rows.some(r => r.s === OV.sel)) && rows.length && (!MODAL.open || MODAL.m !== m || !rows.some(r => r.s === MODAL.s))) ovSelect(rows[0].s);
+}
 function renderOiCol() {
   const m = S.markets[0], col = $('#oiCol');
   if (!MK[m].fut) { col.hidden = true; return; }
@@ -3188,22 +3307,25 @@ function renderTop() {
   $('#selEx').value = ex;
   $$('#segType button').forEach(b => b.classList.toggle('on', b.dataset.t === ty));
   $('#segType [data-t="futures"]').style.display = MK[ex + '-futures'] ? '' : 'none'; // у Bitget — только спот
+  $('#spotOnlyWrap').style.display = MK[m].fut ? 'none' : ''; $('#btnSpotOnly').classList.toggle('on', !!S.spotOnly);
+  $('#btnSpotOnly').textContent = S.spotOnly ? '✓ Без фьючей' : 'Без фьючей';
   $$('#viewTabs button').forEach(b => b.classList.toggle('on', b.dataset.v === v));
-  $('#gridWrap').hidden = v !== 'map'; $('#setWrap').hidden = v !== 'setups'; $('#snapWrap').hidden = v !== 'snaps';
+  $('#gridWrap').hidden = v !== 'map'; $('#setWrap').hidden = v !== 'setups'; $('#snapWrap').hidden = v !== 'snaps'; $('#ovWrap').hidden = v !== 'ov';
+  ovDock(v === 'ov');
   const tfs = v === 'setups' ? SET_TFS : TFS, cur = v === 'setups' ? S.setTf : S.tf;
   $('#selTf').innerHTML = tfs.map(t => `<option value="${t}">${TF_LAB[t]}</option>`).join(''); $('#selTf').value = cur;
-  $('#tfWrap').style.display = v === 'snaps' ? 'none' : '';
+  $('#tfWrap').style.display = v === 'snaps' || v === 'ov' ? 'none' : '';
   $('#tfWrap').title = v === 'setups' ? 'Таймфрейм, на котором ищутся уровни' : 'Таймфрейм графиков';
   const gcur = v === 'setups' ? S.setGrid : S.grid;
   $('#selGrid').innerHTML = GRIDS.map(gs => `<option value="${gs}">${gridLab(gs)}</option>`).join(''); $('#selGrid').value = gcur;
-  $('#gridSelWrap').style.display = v === 'snaps' ? 'none' : '';
+  $('#gridSelWrap').style.display = v === 'snaps' || v === 'ov' ? 'none' : '';
   { // фьючерсы: до $1B, спот: до $100M
     const cur = minVolFor(m), vs = (MK[m].fut ? VOL_FUT : VOL_SPOT).slice();
     if (!vs.includes(cur)) { vs.push(cur); vs.sort((a, b) => a - b); }
     $('#selMinVol').innerHTML = vs.map(v => `<option value="${v}">${volLab(v)}</option>`).join('') + '<option value="custom">своя сумма…</option>';
     $('#selMinVol').value = String(cur); $('#selMinVol').hidden = false; $('#minVolIn').hidden = true;
   }
-  $('#qWrap').style.display = v === 'map' ? '' : 'none';
+  $('#qWrap').style.display = v === 'map' || v === 'ov' ? '' : 'none';
   $('#btnFreeze').style.display = v === 'map' ? '' : 'none'; $('#btnFreeze').classList.toggle('on', S.frozen);
   $('#panel').classList.toggle('open', S.panel); $('#btnPanel').classList.toggle('on', S.panel);
   renderSoundBtn(); updateDots();
@@ -3221,6 +3343,7 @@ function setupUI() {
   const setMarket = m => {
     if (!MK[m] || m === S.markets[0]) return;
     S.markets = [m]; saveS(); renderTop(); updateBanner(); buildGrid(true); mdSync(); resetSetups();
+    if (S.view === 'ov') { OV.sel = null; loadSymbols(m).then(() => ovRender(true)).catch(() => ovRender(true)); }
   };
   $('#selEx').onchange = e => { const ex = e.target.value, ty = S.markets[0].split('-')[1]; setMarket(MK[ex + '-' + ty] ? ex + '-' + ty : ex + '-spot'); };
   $('#segType').addEventListener('click', e => { const b = e.target.closest('button'); if (b && MK[S.markets[0].split('-')[0] + '-' + b.dataset.t]) setMarket(S.markets[0].split('-')[0] + '-' + b.dataset.t); });
@@ -3229,8 +3352,14 @@ function setupUI() {
     S.view = b.dataset.v; saveS(); renderTop(); renderMdStatus();
     if (S.view === 'setups') { renderSetups(); if (!SETUP.lastScan) setupScan(true); }
     else if (S.view === 'snaps') renderSnaps();
+    else if (S.view === 'ov') { loadSymbols(S.markets[0]).then(() => ovRender(true)).catch(() => ovRender(true)); }
     else buildGrid(false);
   });
+  $('#ovHead').addEventListener('click', e => {
+    const h = e.target.closest('[data-k]'); if (!h) return;
+    const k = h.dataset.k; S.ovSort = S.ovSort.k === k ? { k, d: -S.ovSort.d } : { k, d: k === 'b' ? 1 : -1 }; saveS(); ovRender();
+  });
+  $('#ovBody').addEventListener('click', e => { const r = e.target.closest('.ovr'); if (r) ovSelect(r.dataset.s); });
   $('#selTf').onchange = e => {
     const v = e.target.value;
     if (S.view === 'setups') { S.setTf = v; saveS(); resetSetups(); }
@@ -3251,6 +3380,13 @@ function setupUI() {
     if (MK[S.markets[0]].fut) S.minVolFut = v; else S.minVolSpot = v;
     saveS(); renderTop(); buildGrid(false); mdSync(); SETUP.lastScan = 0; setupScan(true);
   };
+  window.__mmVol0 = () => applyMinVol(0);
+  const setSpotOnly = on => {
+    S.spotOnly = on; saveS(); renderTop(); buildGrid(true); mdSync(); SETUP.lastScan = 0; setupScan(true);
+    if (S.view === 'ov') ovRender(true);
+  };
+  window.__mmSpotAll = () => setSpotOnly(false);
+  $('#btnSpotOnly').onclick = () => setSpotOnly(!S.spotOnly);
   $('#selMinVol').onchange = e => {
     if (e.target.value !== 'custom') return applyMinVol(+e.target.value);
     const inp = $('#minVolIn'); e.target.hidden = true; inp.hidden = false;
@@ -3267,7 +3403,7 @@ function setupUI() {
     if (h) { const k = h.dataset.sort; S.oiSort = S.oiSort.k === k ? { k, d: -S.oiSort.d } : { k, d: k === 's' ? 1 : -1 }; saveS(); renderOiCol(); return; }
     const r = e.target.closest('.oicr[data-s]'); if (r) openChart(S.markets[0], r.dataset.s);
   });
-  $('#q').addEventListener('input', debounce(e => { QUERY = e.target.value.trim().toUpperCase(); buildGrid(false); }, 250));
+  $('#q').addEventListener('input', debounce(e => { QUERY = e.target.value.trim().toUpperCase(); buildGrid(false); if (S.view === 'ov') ovRender(); }, 250));
   $('#btnFreeze').onclick = () => { S.frozen = !S.frozen; saveS(); renderTop(); renderMdStatus(); };
   $('#btnRefresh').onclick = async () => { for (const m of S.markets) SYM[m].t = 0; await buildGrid(false); };
   $('#btnSound').onclick = () => { S.sound = !S.sound; saveS(); renderSoundBtn(); const cb = $('#settings [data-k=sound]'); if (cb) cb.checked = S.sound; if (S.sound) playSound('level', true); };
@@ -3345,13 +3481,17 @@ function setupUI() {
     }
     const tag = (e.target && e.target.tagName) || '';
     if (e.key === '/' && !/INPUT|TEXTAREA|SELECT/.test(tag)) { e.preventDefault(); $('#q').focus(); $('#q').select(); }
+    if (S.view === 'ov' && (e.key === 'ArrowDown' || e.key === 'ArrowUp') && !/INPUT|TEXTAREA|SELECT/.test(tag)) {
+      e.preventDefault(); const i = OV.rows.findIndex(r => r.s === OV.sel);
+      const n = OV.rows[Math.max(0, Math.min(OV.rows.length - 1, i + (e.key === 'ArrowDown' ? 1 : -1)))]; if (n) ovSelect(n.s, true);
+    }
   });
 }
 
 /* =====================================================================
    ЦИКЛ ОТРИСОВКИ
    ===================================================================== */
-let lastHdr = 0, lastDist = 0, lastMdSt = 0, lastSetLive = 0;
+let lastHdr = 0, lastDist = 0, lastMdSt = 0, lastSetLive = 0, lastOv = 0;
 function guard(tag, fn) {
   try { fn(); } catch (e) { if (window.__mmShowErr) window.__mmShowErr(tag + ': ' + (e && e.message || e) + (e && e.stack ? '\n  ' + String(e.stack).split('\n').slice(0, 2).join('\n  ') : '')); }
 }
@@ -3377,6 +3517,7 @@ function tick() {
   if (Date.now() - lastDist > 1500) { lastDist = Date.now(); if (S.panel && (S.tab === 'levels' || S.tab === 'oi')) PD = true; if (MODAL.open) guard('уровни', renderModalLevels); }
   if (PD && Date.now() - lastPanel > 400) guard('панель', renderPanel);
   if (Date.now() - lastMdSt > 1000) { lastMdSt = Date.now(); guard('статус', renderMdStatus); guard('сортировка', autoResort); }
+  if (S.view === 'ov' && Date.now() - lastOv > 2000) { lastOv = Date.now(); guard('обзор', () => ovRender()); }
   if (S.view === 'setups') {
     if (Date.now() - lastSetLive > 2000) { lastSetLive = Date.now(); guard('сетапы', setupLive); guard('OI', renderOiCol); }
     for (const c of SCARDS.values()) if (c.chart.dirty) guard('сетап ' + c.s, () => c.chart.draw());
@@ -3384,7 +3525,7 @@ function tick() {
 }
 
 /* ---------- автообновление: страница сама подхватывает новую версию ---------- */
-const APP_V = '22';
+const APP_V = '23';
 window.__mmVersion = v => {
   if (!v || v === APP_V) return;
   const b = $('#banner'); b.hidden = false; b.textContent = 'Вышла новая версия сайта — обновляю страницу…';
@@ -3423,7 +3564,7 @@ async function init() {
   setInterval(() => mdSync(), 5 * 60e3);
   setInterval(checkVersion, 15000);
   setInterval(() => guard('снимки', snapsCheck), 10000);
-  window.MM = { SYMS: SYM, snapsCheck, RL, api, S, LEVELS: () => LEVELS, EVENTS: () => EVENTS, OIM, FEEDS, CARDS, MODAL, NET, MD, SYM, fire, openChart, addLevel, calcMetric, buildGrid, SETUP, setupScan, SCARDS, detectKnife, detectSetup, liveBars, SNAPS, DRAWS: () => DRAWS, CHARTS, takeSnapshot };
+  window.MM = { SYMS: SYM, OV, ovRender, snapsCheck, RL, api, S, LEVELS: () => LEVELS, EVENTS: () => EVENTS, OIM, FEEDS, CARDS, MODAL, NET, MD, SYM, fire, openChart, addLevel, calcMetric, buildGrid, SETUP, setupScan, SCARDS, detectKnife, detectSetup, liveBars, SNAPS, DRAWS: () => DRAWS, CHARTS, takeSnapshot };
 }
 init();
 })();
