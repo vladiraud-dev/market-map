@@ -77,10 +77,14 @@ input[type=number]{width:64px}
 #gridMsg:empty{display:none}
 #gridWrap[hidden],#setWrap[hidden],#snapWrap[hidden],#ovWrap[hidden]{display:none}
 #ovWrap{flex:1;min-height:0;display:flex}
-.ovl{width:min(44%,760px);min-width:500px;display:flex;flex-direction:column;border-right:1px solid var(--line);background:var(--top);min-height:0}
+.ovl{width:min(44%,760px);min-width:500px;display:flex;flex-direction:column;background:var(--top);min-height:0}
 .ovh,.ovr{display:grid;grid-template-columns:var(--ovcols);gap:6px;align-items:center;padding:0 12px}
 .ovh{height:34px;flex:none;color:var(--dim);font-size:11px;border-bottom:1px solid var(--line)}
-.ovh span{cursor:pointer;user-select:none;-webkit-user-select:none;white-space:nowrap}
+.ovh span{cursor:pointer;user-select:none;-webkit-user-select:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ovSplit{width:9px;margin:0 -4px;flex:none;cursor:col-resize;position:relative;z-index:6}
+.ovSplit::after{content:'';position:absolute;left:4px;top:0;bottom:0;width:1px;background:var(--line);transition:background .15s}
+.ovSplit:hover::after,.ovSplit.on::after{background:var(--acc);width:3px;left:3px}
+body.resizing,body.resizing *{cursor:col-resize !important;user-select:none !important;-webkit-user-select:none !important}
 .ovh span:hover{color:var(--tx)}
 .ovh span.on{color:var(--acc);font-weight:600}
 .ovb{flex:1;overflow:auto;min-height:0}
@@ -325,7 +329,7 @@ h4{margin:0;font-size:12px;color:var(--mut);font-weight:600;text-transform:upper
 <header id="top">
   <div class="brand">
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 17 9 9l4 5 3-4 5 7" stroke="#ffb547" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="9" r="2" fill="#22c3a6"/><circle cx="16" cy="10" r="2" fill="#f0506e"/></svg>
-    <span title="Версия 24">Market<b>Map</b></span>
+    <span title="Версия 25">Market<b>Map</b></span>
   </div>
   <div class="sel" title="Биржа"><i class="dot" id="connDot"></i><select id="selEx"><option value="binance">Binance</option><option value="bybit">Bybit</option><option value="okx">OKX</option><option value="bitget">Bitget</option></select></div>
   <div class="seg2" id="segType"><button data-t="futures">Фьючерсы</button><button data-t="spot" title="Спотовый рынок">Спот</button></div>
@@ -351,7 +355,7 @@ h4{margin:0;font-size:12px;color:var(--mut);font-weight:600;text-transform:upper
 <main id="main">
   <div id="banner" hidden></div>
   <section id="gridWrap"><div id="grid"></div><div id="gridMsg"></div></section>
-  <section id="ovWrap" hidden><div class="ovl"><div class="ovh" id="ovHead"></div><div class="ovb" id="ovBody"></div><div class="ovf" id="ovFoot"></div></div><div class="ovc" id="ovChart">
+  <section id="ovWrap" hidden><div class="ovl"><div class="ovh" id="ovHead"></div><div class="ovb" id="ovBody"></div><div class="ovf" id="ovFoot"></div></div><div class="ovSplit" id="ovSplit" title="Потяни влево или вправо — графики станут шире или уже. Двойной клик — как было"></div><div class="ovc" id="ovChart">
     <div class="mh"><span class="msym" id="ovSym"></span><span class="mk" id="ovMk"></span><span class="mpx" id="ovPx"></span><div class="sp"></div>
       <span class="ovLab">Графиков</span><div class="seg2 ovN" id="ovN" title="Сколько графиков показывать справа (у каждого свой таймфрейм)"><button data-n="1">1</button><button data-n="2">2</button><button data-n="3">3</button><button data-n="4">4</button></div>
       <button class="ib sm" id="ovStar" title="Закрепить монету первой">★</button><a class="ib sm" id="ovEx" target="_blank" rel="noopener" title="Открыть на бирже">Биржа ↗</a><a class="ib sm" id="ovTv" target="_blank" rel="noopener">TV ↗</a></div>
@@ -429,7 +433,7 @@ h4{margin:0;font-size:12px;color:var(--mut);font-weight:600;text-transform:upper
       <div class="mtools" id="mTools">
         <button data-tool="cursor" title="Курсор (Esc)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M5 3l14 8-6 2-2 6z"/></svg></button>
         <button data-tool="trend" title="Трендовая линия: клик — начало, клик — конец"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 20 20 4"/><circle cx="4" cy="20" r="1.8" fill="currentColor"/><circle cx="20" cy="4" r="1.8" fill="currentColor"/></svg></button>
-        <button data-tool="ray" title="Горизонтальный луч: клик в нужной точке"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="5" cy="12" r="2" fill="currentColor"/><path d="M7 12h14"/></svg></button>
+        <button data-tool="ray" title="Горизонтальный луч: клик в нужной точке. Удалить линию: наведи или кликни по ней и нажми Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="5" cy="12" r="2" fill="currentColor"/><path d="M7 12h14"/></svg></button>
         <button data-tool="rect" title="Прямоугольник: клик — угол, клик — противоположный угол"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="6" width="16" height="12" rx="1"/></svg></button>
         <button data-tool="level" title="Уровень с алертом: клик — поставить"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 15h18"/><path d="M15 8a3 3 0 0 0-6 0c0 3.5-1.5 4.5-1.5 4.5h9S15 11.5 15 8"/></svg></button>
         <button data-tool="ruler" title="Линейка (или Shift + клик на любом графике)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M3 17 17 3l4 4L7 21z"/><path d="m7 13 2 2M10 10l2 2M13 7l2 2"/></svg></button>
@@ -581,7 +585,7 @@ const DEF = {
   onlyFav: false, onlyLevels: false, panel: false, tab: 'feed', feedFilter: 'all',
   sound: true, volume: 0.7, notif: true, tgOn: false, tgToken: '', tgChat: '', approach: 0,
   oi: { on: true, bf: true, by: true, ok: true, notify: false, pct: 3, win: 15, minVol: 3e6, cool: 30 },
-  oiSort: { k: 'pct', d: -1 }, ovSort: { k: 'v24', d: -1 }, ovN: 2, ovTfs: ['1m', '5m', '1h', '15m'], tradfi: false,
+  oiSort: { k: 'pct', d: -1 }, ovSort: { k: 'v24', d: -1 }, ovN: 2, ovTfs: ['1m', '5m', '1h', '15m'], ovW: 0, tradfi: false,
 };
 const S = (() => {
   const s = LS.get('settings', {});
@@ -602,7 +606,7 @@ const S = (() => {
   r.sort = 'interest'; if (!['map', 'ov', 'setups', 'snaps'].includes(r.view)) r.view = 'map'; if (!['3x1', '3x2', '3x3', '4x3', '5x3', '6x4'].includes(r.setGrid)) r.setGrid = '3x2'; if (!['3x1', '3x2', '3x3', '4x3', '5x3', '6x4'].includes(r.grid)) r.grid = '3x3'; if (!TF_MS_OK.includes(r.tf)) r.tf = '5m'; if (!['1m', '5m', '15m', '1h'].includes(r.setTf)) r.setTf = '5m';
   if (!r.oiSort || !['s', 'pct', 'pxp', 'usd'].includes(r.oiSort.k) || ![1, -1].includes(r.oiSort.d)) r.oiSort = { k: 'pct', d: -1 };
   if (!r.ovSort || ![1, -1].includes(r.ovSort.d)) r.ovSort = { k: 'v24', d: -1 };
-  r.ovN = [1, 2, 3, 4].includes(r.ovN) ? r.ovN : 2;
+  r.ovN = [1, 2, 3, 4].includes(r.ovN) ? r.ovN : 2; r.ovW = +r.ovW > 0 ? +r.ovW : 0;
   { const d = ['1m', '5m', '1h', '15m']; r.ovTfs = Array.isArray(r.ovTfs) ? r.ovTfs.slice(0, 4) : d; for (let i = 0; i < 4; i++) if (!TF_MS_OK.includes(r.ovTfs[i])) r.ovTfs[i] = d[i]; }
   r.markets = r.markets.slice(0, 1); r.spotOnly = r.spotOnly !== false; r.onlyFav = false; r.onlyLevels = false;
   if (!/^\d+x\d+$/.test(r.grid)) r.grid = '3x3';
@@ -1021,10 +1025,11 @@ class Chart {
     this.bw = 8; this.off = 0; this.mx = null; this.my = null; this.drag = null; this.pan = null; this.ruler = null; this.tool = null; this.pend = null;
     this.hl = null; this.G = null; this.frozen = null; this.dirty = true; this.W = 10; this.H = 10; this.dpr = 1;
     this.uz = 1; this.uv = 0; this.rulerArm = false; // uz — масштаб маленького графика (колёсико/щипок), uv — когда трогали
+    this.sel = null; this.hdw = null; // выбранный (клик) и наведённый рисунок/уровень — их удаляет клавиша Delete
     this.ro = new ResizeObserver(() => this.resize()); this.ro.observe(host);
     const c = this.cv;
     c.addEventListener('mousemove', e => this.hover(e));
-    c.addEventListener('mouseleave', () => { if (this.drag || this.pan) return; this.mx = this.my = null; this.hl = null; this.dirty = true; });
+    c.addEventListener('mouseleave', () => { if (this.drag || this.pan) return; this.mx = this.my = null; this.hl = null; this.hdw = null; this.dirty = true; });
     c.addEventListener('mousedown', e => this.down(e));
     this._mm = e => this.move(e); this._mu = e => this.up(e);
     this.asleep = !!this.o.asleep; if (this.asleep) { c.width = 1; c.height = 1; }
@@ -1151,7 +1156,8 @@ class Chart {
     if (this.pend) this.pend.b = this.ptAt(x, y, true);
     const busy = this.ruler || this.rulerArm || (this.tool && this.tool !== 'cursor');
     const l = busy ? null : this.hit(y); this.hl = l ? l.id : null;
-    this.cv.style.cursor = l ? 'ns-resize' : (e.shiftKey || busy) ? 'crosshair' : (this.mini ? 'pointer' : 'crosshair');
+    const dw = busy || l ? null : this.hitDraw(x, y); this.hdw = dw ? dw.id : null;
+    this.cv.style.cursor = l ? 'ns-resize' : (e.shiftKey || busy) ? 'crosshair' : dw ? 'pointer' : (this.mini ? 'pointer' : 'crosshair');
     this.dirty = true;
   }
   down(e) {
@@ -1170,7 +1176,12 @@ class Chart {
     }
     if (this.ruler) { this.ruler = null; this._noClick = true; this.dirty = true; return; }
     if (this.tool && this.tool !== 'cursor') { e.preventDefault(); this._noClick = true; this.toolClick(x, y); return; }
-    const l = this.hit(y);
+    const l = this.hit(y), dw = l ? null : this.hitDraw(x, y);
+    // клик по уровню или рисунку — выделяем (Delete удалит), по пустому месту — снимаем выделение
+    const sel = l ? { kind: 'lv', id: l.id } : dw ? { kind: 'dw', id: dw.id } : null;
+    for (const c of CHARTS) if (c !== this && c.sel) { c.sel = null; c.dirty = true; }
+    this.sel = sel; this.dirty = true;
+    if (dw) this._noClick = true; // на маленьком графике клик по линии не открывает большой график
     if (l) { this.drag = { l, p: l.p, y0: y, moved: false }; this.frozen = this.G ? [this.G.lo, this.G.hi] : null; e.preventDefault(); }
     else { this.pan = { x0: x, off0: this.off, moved: false }; if (!this.mini) this.cv.style.cursor = 'grabbing'; e.preventDefault(); }
     if (this.drag || this.pan) { window.addEventListener('mousemove', this._mm); window.addEventListener('mouseup', this._mu); }
@@ -1327,13 +1338,17 @@ class Chart {
     }
     // рисунки пользователя
     g.save(); g.beginPath(); g.rect(0, 0, plotR, pBot); g.clip();
+    const selD = this.sel && this.sel.kind === 'dw' ? this.sel.id : null;
+    let hint = null;
     const drawOne = (dw, prev) => {
       const xa = xOf(this.tToI(dw.a.t)), ya = yOf(dw.a.p);
-      g.strokeStyle = COL.draw; g.globalAlpha = prev ? 0.65 : 1; g.lineWidth = 1.5;
+      const hot = !prev && (dw.id === selD || dw.id === this.hdw);
+      if (!prev && dw.id === selD) hint = [clamp(xa, 8, plotR - 140), ya];
+      g.strokeStyle = hot ? '#8cc4ff' : COL.draw; g.globalAlpha = prev ? 0.65 : 1; g.lineWidth = hot ? 2.6 : 1.5;
       if (dw.type === 'ray') { g.beginPath(); g.moveTo(xa, ya); g.lineTo(plotR, ya); g.stroke(); }
       else {
         const xb = xOf(this.tToI(dw.b.t)), yb = yOf(dw.b.p);
-        if (dw.type === 'trend') { g.beginPath(); g.moveTo(xa, ya); g.lineTo(xb, yb); g.stroke(); if (!mini) { g.fillStyle = COL.draw; g.beginPath(); g.arc(xa, ya, 2.5, 0, 7); g.arc(xb, yb, 2.5, 0, 7); g.fill(); } }
+        if (dw.type === 'trend') { g.beginPath(); g.moveTo(xa, ya); g.lineTo(xb, yb); g.stroke(); if (!mini || hot) { g.fillStyle = g.strokeStyle; g.beginPath(); g.arc(xa, ya, hot ? 3.5 : 2.5, 0, 7); g.arc(xb, yb, hot ? 3.5 : 2.5, 0, 7); g.fill(); } }
         else if (dw.type === 'rect') { g.fillStyle = COL.drawF; g.fillRect(Math.min(xa, xb), Math.min(ya, yb), Math.abs(xb - xa), Math.abs(yb - ya)); g.strokeRect(Math.min(xa, xb), Math.min(ya, yb), Math.abs(xb - xa), Math.abs(yb - ya)); }
       }
       g.lineWidth = 1; g.globalAlpha = 1;
@@ -1342,6 +1357,7 @@ class Chart {
     if (this.pend && this.pend.b) drawOne(this.pend, true);
     g.restore();
     for (const dw of this.draws) if (dw.type === 'ray' && sc) { const y = yOf(dw.a.p); if (y >= top && y <= cBot) this.pill(plotR + 1, y, fmtP(dw.a.p, this.dec), COL.draw, '#06101f', false); }
+    if (hint && hint[1] > top + 10 && hint[1] < cBot) this.pill(hint[0], hint[1] - 13, 'Delete — удалить', '#24344d', '#dbe8ff', false);
     // текущая цена
     const lastUp = d[n - 1].c >= d[n - 1].o;
     const ly = Math.round(yOf(last)) + 0.5;
@@ -1368,7 +1384,9 @@ class Chart {
         continue;
       }
       const yy = Math.round(y) + 0.5;
-      const thick = this.hl === l.id || dragging;
+      const selL = this.sel && this.sel.kind === 'lv' && this.sel.id === l.id;
+      const thick = this.hl === l.id || dragging || selL;
+      if (selL && !dragging && (!mini || W > 230)) { const hx = sc ? plotR * 0.42 : 8; this.pill(hx, yy - 12, 'Delete — удалить', '#24344d', '#dbe8ff', false); }
       g.strokeStyle = col; g.lineWidth = thick ? 2 : 1;
       if (hitSt) g.setLineDash([5, 4]);
       g.beginPath(); g.moveTo(0, yy); g.lineTo(plotR, yy); g.stroke();
@@ -1902,6 +1920,17 @@ function makeCard(m, s) {
   el._card = card; IO.observe(el);
   return card;
 }
+// клавиша Delete / ⌫: удалить уровень или линию под мышкой, иначе — выделенную кликом
+function chartDelete() {
+  let ch = null, it = null;
+  for (const c of CHARTS) if (c.mx != null && (c.hl || c.hdw)) { ch = c; it = c.hl ? { kind: 'lv', id: c.hl } : { kind: 'dw', id: c.hdw }; break; }
+  if (!ch) for (const c of CHARTS) if (c.sel) { ch = c; it = c.sel; break; }
+  if (!ch) return false;
+  if (it.kind === 'lv') { if (ch.o.onDel) ch.o.onDel(it.id); } else if (ch.o.onDrawDel) ch.o.onDrawDel(it.id);
+  for (const c of CHARTS) if (c.sel && c.sel.id === it.id) c.sel = null;
+  ch.hl = null; ch.hdw = null; ch.dirty = true;
+  return true;
+}
 // кнопки маленького графика: линейка и «вернуть масштаб»
 function miniTool(ch, b, e) {
   if (b.dataset.a === 'ruler') {
@@ -2119,7 +2148,7 @@ function openChart(m, s, opt) {
   $('#mStar').classList.toggle('on', FAVS.has(k));
   renderModalTf();
   const ch = MODAL.chart;
-  ch.tick = r.tick; ch.dec = decOf(r); ch.lv = LIDX.get(k) || []; ch.auto = (opt && opt.auto) || []; ch.o.marg = ch.auto.length ? 16 : null; ch.draws = DRAWS[k] || []; ch.ruler = null; ch.pend = null;
+  ch.tick = r.tick; ch.dec = decOf(r); ch.lv = LIDX.get(k) || []; ch.auto = (opt && opt.auto) || []; ch.o.marg = ch.auto.length ? 16 : null; ch.draws = DRAWS[k] || []; ch.ruler = null; ch.pend = null; ch.sel = null;
   setTool('cursor');
   ch.resize();
   MODAL.hd = true;
@@ -3061,10 +3090,22 @@ function setupLive() {
    ОБЗОР РЫНКА: все монеты списком + большой график справа (на нём можно рисовать)
    ===================================================================== */
 const OV = { sel: null, rows: [] };
-const OV_COLS = [
-  ['b', 'Монета', 0], ['p', 'Цена', 1], ['c5', '5м %', 1], ['c15', '15м %', 1], ['c60', '1ч %', 1], ['c24', '24ч %', 1],
-  ['v24', 'Объём 24ч', 1], ['v5', 'Объём 5м', 1], ['sp', 'Всплеск', 1], ['nt', 'NATR', 1], ['oi', 'OI %', 1],
+const OV_COLS = [ // ключ, заголовок, число?, мин. ширина, подсказка
+  ['b', 'Монета', 0, 64, 'Монета'], ['p', 'Цена', 1, 62, 'Последняя цена'], ['c5', '5м %', 1, 48, 'Изменение за 5 минут, %'], ['c15', '15м %', 1, 50, 'Изменение за 15 минут, %'],
+  ['c60', '1ч %', 1, 48, 'Изменение за час, %'], ['c24', '24ч %', 1, 52, 'Изменение за сутки, %'], ['v24', 'Объём', 1, 56, 'Объём за 24 часа, $'], ['v5', 'Об. 5м', 1, 52, 'Объём за последние 5 минут, $'],
+  ['sp', 'Всплеск', 1, 52, 'Во сколько раз объём за 5 минут выше обычного'], ['nt', 'NATR', 1, 44, 'NATR 5м — средний размах 5-минутной свечи, %'], ['oi', 'OI %', 1, 44, 'Рост открытого интереса, %'],
 ];
+const OV_DROP = ['c15', 'v5', 'sp', 'c60', 'oi', 'nt', 'c5', 'p']; // что прятать первым, когда список узкий
+function ovCols(fut) {
+  let cols = OV_COLS.filter(c => fut || c[0] !== 'oi');
+  const avail = (($('.ovl') || {}).clientWidth || 640) - 24;
+  for (const k of OV_DROP) { if (cols.reduce((a, c) => a + c[3] + 6, 0) <= avail) break; cols = cols.filter(c => c[0] !== k); }
+  return cols;
+}
+function ovApplyW() {
+  const ww = $('#ovWrap').clientWidth, l = $('.ovl'), w = S.ovW ? Math.round(clamp(S.ovW, 200, ww ? Math.max(220, ww - 360) : 5000)) : 0;
+  l.style.width = w ? w + 'px' : ''; l.style.minWidth = w ? '0' : '';
+}
 // правая часть «Обзора»: 1–4 графика выбранной монеты, у каждого свой таймфрейм; на всех можно рисовать
 const OVP = { m: null, s: null, panes: [], tool: 'cursor', tmr: 0, _h: '' };
 function ovInit() {
@@ -3083,6 +3124,23 @@ function ovInit() {
     $('#ovPanes').appendChild(el); OVP.panes.push(p);
   }
   $('#ovN').addEventListener('click', e => { const b = e.target.closest('[data-n]'); if (b) ovSetN(+b.dataset.n); });
+  { // разделитель: тянем — список уже/шире, графики шире/уже
+    const sp = $('#ovSplit');
+    sp.addEventListener('mousedown', e => {
+      if (e.button !== 0) return; e.preventDefault();
+      const wrap = $('#ovWrap').getBoundingClientRect(); let key = '';
+      sp.classList.add('on'); document.body.classList.add('resizing');
+      const mv = ev => {
+        S.ovW = Math.round(clamp(ev.clientX - wrap.left, 200, wrap.width - 360)); ovApplyW();
+        const k = ovCols(MK[S.markets[0]].fut).map(c => c[0]).join(); if (k !== key) { key = k; ovRender(); }
+      };
+      const up = () => { window.removeEventListener('mousemove', mv); window.removeEventListener('mouseup', up); sp.classList.remove('on'); document.body.classList.remove('resizing'); saveS(); ovRender(); };
+      window.addEventListener('mousemove', mv); window.addEventListener('mouseup', up);
+    });
+    sp.addEventListener('dblclick', () => { S.ovW = 0; ovApplyW(); saveS(); ovRender(); });
+    window.addEventListener('resize', debounce(() => { if (S.view === 'ov') { ovApplyW(); ovRender(); } }, 200));
+  }
+  ovApplyW();
   $('#ovTools').addEventListener('click', e => {
     const b = e.target.closest('button'); if (!b || !OVP.m) return;
     if (b.dataset.act === 'clear') { clearDraws(OVP.m + '|' + OVP.s); return; }
@@ -3114,7 +3172,7 @@ function ovShow(m, s) {
   if (same && !OVP.stale) return;
   OVP.stale = false;
   ovSetTool('cursor');
-  for (const p of OVP.panes) { p.tok++; p.loaded = false; p.busy = false; const ch = p.chart; ch.data = []; ch.oi = null; ch.ruler = null; ch.pend = null; ch.dirty = true; p.ld.textContent = 'загрузка…'; p.ld.style.display = ''; }
+  for (const p of OVP.panes) { p.tok++; p.loaded = false; p.busy = false; const ch = p.chart; ch.data = []; ch.oi = null; ch.ruler = null; ch.pend = null; ch.sel = null; ch.dirty = true; p.ld.textContent = 'загрузка…'; p.ld.style.display = ''; }
   ovHdr();
   // стрелками листают быстро — свечи грузим только для монеты, на которой остановились
   clearTimeout(OVP.tmr); OVP.tmr = setTimeout(() => { OVP.panes.forEach((p, i) => { if (i < S.ovN) ovPaneLoad(p); }); }, 150);
@@ -3164,8 +3222,8 @@ function ovSelect(s, scroll) {
 function ovRender(pick) {
   if (S.view !== 'ov') return;
   const m = S.markets[0], fut = MK[m].fut, mv = minVolFor(m), q = QUERY;
-  const cols = OV_COLS.filter(c => fut || c[0] !== 'oi');
-  $('#ovWrap').style.setProperty('--ovcols', 'minmax(70px,1.2fr) minmax(64px,1fr) ' + cols.slice(2).map(c => c[0] === 'v24' || c[0] === 'v5' ? 'minmax(52px,.9fr)' : 'minmax(44px,.75fr)').join(' '));
+  const cols = ovCols(fut);
+  $('#ovWrap').style.setProperty('--ovcols', cols.map(c => `minmax(${c[3]}px,${c[0] === 'b' ? 1.2 : c[0] === 'p' ? 1 : c[0][0] === 'v' ? 0.9 : 0.75}fr)`).join(' '));
   const so = S.ovSort.k === 'oi' && !fut ? { k: 'v24', d: -1 } : S.ovSort;
   const rows = [];
   for (const r of SYM[m].list) {
@@ -3179,12 +3237,17 @@ function ovRender(pick) {
   const val = x => so.k === 'p' ? x.p : x[so.k];
   rows.sort((a, b) => so.k === 'b' ? a.b.localeCompare(b.b) * so.d : ((val(a) ?? -Infinity) - (val(b) ?? -Infinity)) * so.d || (b.v24 || 0) - (a.v24 || 0));
   OV.rows = rows;
-  $('#ovHead').innerHTML = cols.map(c => `<span data-k="${c[0]}" class="${c[2] ? 'num' : ''}${so.k === c[0] ? ' on' : ''}" title="Сортировать">${c[1]}${so.k === c[0] ? (so.d < 0 ? ' ↓' : ' ↑') : ''}</span>`).join('');
+  const hh = cols.map(c => `<span data-k="${c[0]}" class="${c[2] ? 'num' : ''}${so.k === c[0] ? ' on' : ''}" title="${c[4]} — клик: сортировать">${c[1]}${so.k === c[0] ? (so.d < 0 ? ' ↓' : ' ↑') : ''}</span>`).join('');
+  if ($('#ovHead')._h !== hh) { $('#ovHead').innerHTML = hh; $('#ovHead')._h = hh; }
   const pc = v => v == null ? '<span class="num mut">—</span>' : `<span class="num ${v >= 0 ? 'up' : 'dn'}">${(v > 0 ? '+' : '') + v.toFixed(2)}</span>`;
-  const html = rows.map(x => `<div class="ovr${x.s === OV.sel ? ' sel' : ''}" data-s="${esc(x.s)}"><b>${esc(x.b)}</b><span class="num">${x.p ? fmtP(x.p, x.dec) : '—'}</span>${pc(x.c5)}${pc(x.c15)}${pc(x.c60)}${pc(x.c24)}`
-    + `<span class="num${x.v24 >= 100e6 ? ' yl' : ''}">${fmtShort(x.v24) || '—'}</span><span class="num${x.sp >= 2 ? ' hot' : ' mut'}">${fmtShort(x.v5) || '—'}</span>`
-    + `<span class="num${x.sp >= 2 ? ' hot' : ' mut'}">${x.sp != null ? '×' + x.sp.toFixed(1) : '—'}</span><span class="num${x.nt >= 1.5 ? ' yl' : ''}">${x.nt != null ? x.nt.toFixed(2) : '—'}</span>`
-    + (fut ? `<span class="num${x.oi >= 1 ? ' oi' : x.oi != null && x.oi < 0 ? ' dn' : ' mut'}">${x.oi != null ? (x.oi > 0 ? '+' : '') + x.oi.toFixed(1) : '—'}</span>` : '') + '</div>').join('');
+  const CELL = {
+    b: x => `<b>${esc(x.b)}</b>`, p: x => `<span class="num">${x.p ? fmtP(x.p, x.dec) : '—'}</span>`,
+    c5: x => pc(x.c5), c15: x => pc(x.c15), c60: x => pc(x.c60), c24: x => pc(x.c24),
+    v24: x => `<span class="num${x.v24 >= 100e6 ? ' yl' : ''}">${fmtShort(x.v24) || '—'}</span>`, v5: x => `<span class="num${x.sp >= 2 ? ' hot' : ' mut'}">${fmtShort(x.v5) || '—'}</span>`,
+    sp: x => `<span class="num${x.sp >= 2 ? ' hot' : ' mut'}">${x.sp != null ? '×' + x.sp.toFixed(1) : '—'}</span>`, nt: x => `<span class="num${x.nt >= 1.5 ? ' yl' : ''}">${x.nt != null ? x.nt.toFixed(2) : '—'}</span>`,
+    oi: x => `<span class="num${x.oi >= 1 ? ' oi' : x.oi != null && x.oi < 0 ? ' dn' : ' mut'}">${x.oi != null ? (x.oi > 0 ? '+' : '') + x.oi.toFixed(1) : '—'}</span>`,
+  };
+  const html = rows.map(x => `<div class="ovr${x.s === OV.sel ? ' sel' : ''}" data-s="${esc(x.s)}">` + cols.map(c => CELL[c[0]](x)).join('') + '</div>').join('');
   const body = $('#ovBody'); if (body._h !== html) { body.innerHTML = html || `<div class="empty" style="padding:30px;text-align:center;color:var(--dim)">${q ? 'Ничего не найдено' : 'Нет монет под фильтр объёма — уменьши «Объём от»'}</div>`; body._h = html; }
   $('#ovFoot').textContent = `${MK[m].label} · монет: ${rows.length} · ↑↓ — следующая/предыдущая монета · клик по заголовку — сортировка`;
   if (rows.length && (pick || OVP.m !== m || !rows.some(r => r.s === OV.sel))) ovSelect((rows.find(r => r.s === OV.sel) || rows[0]).s);
@@ -3475,6 +3538,7 @@ function renderTop() {
   $$('#viewTabs button').forEach(b => b.classList.toggle('on', b.dataset.v === v));
   $('#gridWrap').hidden = v !== 'map'; $('#setWrap').hidden = v !== 'setups'; $('#snapWrap').hidden = v !== 'snaps'; $('#ovWrap').hidden = v !== 'ov';
   if (v !== 'ov' && OVP.m) OVP.stale = true;
+  if (v === 'ov') requestAnimationFrame(ovApplyW);
   refreshSubsSoon();
   const tfs = v === 'setups' ? SET_TFS : TFS, cur = v === 'setups' ? S.setTf : S.tf;
   $('#selTf').innerHTML = tfs.map(t => `<option value="${t}">${TF_LAB[t]}</option>`).join(''); $('#selTf').value = cur;
@@ -3517,7 +3581,7 @@ function setupUI() {
     S.view = b.dataset.v; saveS(); renderTop(); renderMdStatus();
     if (S.view === 'setups') { renderSetups(); if (!SETUP.lastScan) setupScan(true); }
     else if (S.view === 'snaps') renderSnaps();
-    else if (S.view === 'ov') { loadSymbols(S.markets[0]).then(() => ovRender(true)).catch(() => ovRender(true)); }
+    else if (S.view === 'ov') { ovApplyW(); loadSymbols(S.markets[0]).then(() => ovRender(true)).catch(() => ovRender(true)); }
     else buildGrid(false);
   });
   $('#ovHead').addEventListener('click', e => {
@@ -3636,7 +3700,7 @@ function setupUI() {
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
       let had = false;
-      for (const ch of CHARTS) if (ch.ruler || ch.pend || ch.rulerArm) { ch.ruler = null; ch.pend = null; ch.rulerArm = false; ch.dirty = true; had = true; }
+      for (const ch of CHARTS) if (ch.ruler || ch.pend || ch.rulerArm || ch.sel) { ch.ruler = null; ch.pend = null; ch.rulerArm = false; ch.sel = null; ch.dirty = true; had = true; }
       $$('.htools [data-a=ruler].on').forEach(q => q.classList.remove('on'));
       if (MODAL.open && MODAL.chart && MODAL.chart.tool && MODAL.chart.tool !== 'cursor') { setTool('cursor'); had = true; }
       if (S.view === 'ov' && OVP.tool !== 'cursor') { ovSetTool('cursor'); had = true; }
@@ -3648,6 +3712,7 @@ function setupUI() {
     }
     const tag = (e.target && e.target.tagName) || '';
     if (e.key === '/' && !/INPUT|TEXTAREA|SELECT/.test(tag)) { e.preventDefault(); $('#q').focus(); $('#q').select(); }
+    if ((e.key === 'Delete' || e.key === 'Backspace') && !/INPUT|TEXTAREA|SELECT/.test(tag) && !e.target.isContentEditable) { if (chartDelete()) { e.preventDefault(); return; } }
     if (S.view === 'ov' && (e.key === 'ArrowDown' || e.key === 'ArrowUp') && !/INPUT|TEXTAREA|SELECT/.test(tag)) {
       e.preventDefault(); const i = OV.rows.findIndex(r => r.s === OV.sel);
       const n = OV.rows[Math.max(0, Math.min(OV.rows.length - 1, i + (e.key === 'ArrowDown' ? 1 : -1)))]; if (n) ovSelect(n.s, true);
@@ -3696,7 +3761,7 @@ function tick() {
 }
 
 /* ---------- автообновление: страница сама подхватывает новую версию ---------- */
-const APP_V = '24';
+const APP_V = '25';
 window.__mmVersion = v => {
   if (!v || v === APP_V) return;
   const b = $('#banner'); b.hidden = false; b.textContent = 'Вышла новая версия сайта — обновляю страницу…';
