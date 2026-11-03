@@ -329,7 +329,7 @@ h4{margin:0;font-size:12px;color:var(--mut);font-weight:600;text-transform:upper
 <header id="top">
   <div class="brand">
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 17 9 9l4 5 3-4 5 7" stroke="#ffb547" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="9" r="2" fill="#22c3a6"/><circle cx="16" cy="10" r="2" fill="#f0506e"/></svg>
-    <span title="Версия 25">Market<b>Map</b></span>
+    <span title="Версия 26">Market<b>Map</b></span>
   </div>
   <div class="sel" title="Биржа"><i class="dot" id="connDot"></i><select id="selEx"><option value="binance">Binance</option><option value="bybit">Bybit</option><option value="okx">OKX</option><option value="bitget">Bitget</option></select></div>
   <div class="seg2" id="segType"><button data-t="futures">Фьючерсы</button><button data-t="spot" title="Спотовый рынок">Спот</button></div>
@@ -436,7 +436,7 @@ h4{margin:0;font-size:12px;color:var(--mut);font-weight:600;text-transform:upper
         <button data-tool="ray" title="Горизонтальный луч: клик в нужной точке. Удалить линию: наведи или кликни по ней и нажми Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="5" cy="12" r="2" fill="currentColor"/><path d="M7 12h14"/></svg></button>
         <button data-tool="rect" title="Прямоугольник: клик — угол, клик — противоположный угол"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="6" width="16" height="12" rx="1"/></svg></button>
         <button data-tool="level" title="Уровень с алертом: клик — поставить"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 15h18"/><path d="M15 8a3 3 0 0 0-6 0c0 3.5-1.5 4.5-1.5 4.5h9S15 11.5 15 8"/></svg></button>
-        <button data-tool="ruler" title="Линейка (или Shift + клик на любом графике)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M3 17 17 3l4 4L7 21z"/><path d="m7 13 2 2M10 10l2 2M13 7l2 2"/></svg></button>
+        <button data-tool="ruler" title="Линейка (или просто нажми Shift, когда мышь на графике)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M3 17 17 3l4 4L7 21z"/><path d="m7 13 2 2M10 10l2 2M13 7l2 2"/></svg></button>
         <div class="tsep"></div>
         <button data-act="clear" title="Удалить все рисунки на этой монете"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></button>
       </div>
@@ -1094,6 +1094,22 @@ class Chart {
     this.off = clamp(this.off + dx / G.bw, -n * 0.7, Math.max(0, this.data.length - 5));
     this.uv = Date.now(); this.dirty = true;
   }
+  // линейка по клавише Shift: нажал — замер пошёл от точки под мышкой; отпустил — замер застыл
+  // (если Shift просто коснулись, не двигая мышь, — линейка идёт за мышью до клика)
+  rulerKey(down) {
+    const R = this.ruler;
+    if (down) {
+      if (this.mx == null || this.my == null || !this.G || this.drag || this.pan) return false;
+      if (R && !R.done) { R.done = true; this.dirty = true; return true; }
+      const p = this.ptAt(this.mx, this.my); if (!p) return false;
+      this.ruler = { a: p, b: p, done: false, x0: this.mx, y0: this.my, key: true };
+      this.rulerArm = false; this.uv = Date.now(); this.cv.style.cursor = 'crosshair'; this.dirty = true;
+      if (this.o.onRuler) this.o.onRuler();
+      return true;
+    }
+    if (R && !R.done && R.key && this.mx != null && Math.hypot(this.mx - R.x0, this.my - R.y0) >= 8) { R.done = true; this.dirty = true; }
+    return false;
+  }
   resetView() { this.uz = 1; this.off = 0; this.uv = 0; this.ruler = null; this.rulerArm = false; this.dirty = true; }
   get changed() { return this.uz !== 1 || Math.abs(this.off) > 0.5; }
   upsert(c) {
@@ -1169,12 +1185,17 @@ class Chart {
     if (e.shiftKey || this.tool === 'ruler' || this.rulerArm) {
       e.preventDefault(); this._noClick = true; this.rulerArm = false; this.uv = Date.now(); if (this.o.onRuler) this.o.onRuler();
       const p = this.ptAt(x, y);
-      if (this.ruler && !this.ruler.done) { this.ruler.b = p; this.ruler.done = true; }
+      const R = this.ruler;
+      // линейку уже начали клавишей Shift и мышь почти не двигали — значит, человек тянет по-старому: начинаем с точки клика
+      if (R && !R.done && !(R.key && Math.hypot(x - R.x0, y - R.y0) < 8)) { R.b = p; R.done = true; }
       else this.ruler = { a: p, b: p, done: false, x0: x, y0: y };
       window.addEventListener('mousemove', this._mm); window.addEventListener('mouseup', this._mu);
       this.dirty = true; return;
     }
-    if (this.ruler) { this.ruler = null; this._noClick = true; this.dirty = true; return; }
+    if (this.ruler) { // клик: идущую линейку фиксируем, готовую — убираем
+      if (!this.ruler.done) { this.ruler.b = this.ptAt(x, y); this.ruler.done = true; } else this.ruler = null;
+      this._noClick = true; this.dirty = true; return;
+    }
     if (this.tool && this.tool !== 'cursor') { e.preventDefault(); this._noClick = true; this.toolClick(x, y); return; }
     const l = this.hit(y), dw = l ? null : this.hitDraw(x, y);
     // клик по уровню или рисунку — выделяем (Delete удалит), по пустому месту — снимаем выделение
@@ -1897,7 +1918,7 @@ function makeCard(m, s) {
   const r = rec(m, s), k = m + '|' + s;
   const el = document.createElement('div');
   el.className = 'cell';
-  el.innerHTML = `<div class="cc"></div><div class="pills">${'<span class="pl cp"></span>'.repeat(6)}<span class="pin" title="Закреплена">★</span><span class="lvb" title="Уровни с алертом"></span></div><div class="htools"><button data-a="pin" title="Закрепить первой">★</button><button data-a="copy" title="Скопировать тикер">⧉</button><a data-a="ex" target="_blank" rel="noopener" title="Открыть на бирже">${exAbbr(m)}</a><a data-a="tv" target="_blank" rel="noopener" title="Открыть в TradingView">TV</a><button data-a="ruler" title="Линейка: нажми и протяни по графику (или Shift + клик)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 17 17 3l4 4L7 21z"/><path d="m7 13 2 2M10 10l2 2M13 7l2 2"/></svg></button><button data-a="reset" class="rst" title="Вернуть масштаб (после колёсика и перетаскивания)">⟲</button></div><div class="ld">загрузка…</div>`;
+  el.innerHTML = `<div class="cc"></div><div class="pills">${'<span class="pl cp"></span>'.repeat(6)}<span class="pin" title="Закреплена">★</span><span class="lvb" title="Уровни с алертом"></span></div><div class="htools"><button data-a="pin" title="Закрепить первой">★</button><button data-a="copy" title="Скопировать тикер">⧉</button><a data-a="ex" target="_blank" rel="noopener" title="Открыть на бирже">${exAbbr(m)}</a><a data-a="tv" target="_blank" rel="noopener" title="Открыть в TradingView">TV</a><button data-a="ruler" title="Линейка: нажми и протяни по графику (или просто нажми Shift, когда мышь на графике)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 17 17 3l4 4L7 21z"/><path d="m7 13 2 2M10 10l2 2M13 7l2 2"/></svg></button><button data-a="reset" class="rst" title="Вернуть масштаб (после колёсика и перетаскивания)">⟲</button></div><div class="ld">загрузка…</div>`;
   const card = { m, s, k, tf: S.tf, el, r, vis: false, hd: true, loaded: false, dead: false, queued: false, leftAt: 0 };
   card.q = { pl: [...el.querySelectorAll('.pills .pl')], lvb: $('.lvb', el), pin: $('.pin', el), pinBtn: $('[data-a=pin]', el), ld: $('.ld', el) };
   card.chart = new Chart($('.cc', el), {
@@ -3021,7 +3042,7 @@ const SCARDS = new Map();
 function makeSetupCard(st) {
   const el = document.createElement('div');
   el.className = 'cell scell';
-  el.innerHTML = `<div class="cc"></div><div class="pills"></div><button class="cbtn" title="Поставить алерт на этот уровень">🔔 алерт</button><div class="htools"><button data-a="snap" title="Сохранить снимок во вкладку «Снимки»">📷</button><button data-a="copy" title="Скопировать тикер">⧉</button><a data-a="ex" target="_blank" rel="noopener" title="Открыть на бирже">${exAbbr(st.m)}</a><a data-a="tv" target="_blank" rel="noopener" title="TradingView">TV</a><button data-a="ruler" title="Линейка: нажми и протяни по графику (или Shift + клик)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 17 17 3l4 4L7 21z"/><path d="m7 13 2 2M10 10l2 2M13 7l2 2"/></svg></button><button data-a="reset" class="rst" title="Вернуть масштаб (после колёсика и перетаскивания)">⟲</button></div>`;
+  el.innerHTML = `<div class="cc"></div><div class="pills"></div><button class="cbtn" title="Поставить алерт на этот уровень">🔔 алерт</button><div class="htools"><button data-a="snap" title="Сохранить снимок во вкладку «Снимки»">📷</button><button data-a="copy" title="Скопировать тикер">⧉</button><a data-a="ex" target="_blank" rel="noopener" title="Открыть на бирже">${exAbbr(st.m)}</a><a data-a="tv" target="_blank" rel="noopener" title="TradingView">TV</a><button data-a="ruler" title="Линейка: нажми и протяни по графику (или просто нажми Shift, когда мышь на графике)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 17 17 3l4 4L7 21z"/><path d="m7 13 2 2M10 10l2 2M13 7l2 2"/></svg></button><button data-a="reset" class="rst" title="Вернуть масштаб (после колёсика и перетаскивания)">⟲</button></div>`;
   const c = { k: st.k, m: st.m, s: st.s, el, st };
   c.q = { pills: $('.pills', el), bell: $('.cbtn', el) };
   const open = () => openChart(c.m, c.s, { auto: c.st.lines || [], tf: c.st.tf || S.setTf, setup: c.st });
@@ -3697,6 +3718,14 @@ function setupUI() {
   };
   $('#sClearEv').onclick = () => { EVENTS = []; saveEvents(); renderPanel(); };
   bindInputs(document);
+  // Shift — сразу линейка на графике под мышкой
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Shift' || e.repeat || e.metaKey || e.ctrlKey || e.altKey) return;
+    const tag = (e.target && e.target.tagName) || '';
+    if (/INPUT|TEXTAREA|SELECT/.test(tag) || (e.target && e.target.isContentEditable)) return;
+    for (const ch of CHARTS) if (ch.mx != null && ch.rulerKey(true)) break;
+  });
+  document.addEventListener('keyup', e => { if (e.key === 'Shift') for (const ch of CHARTS) if (ch.ruler && !ch.ruler.done) ch.rulerKey(false); });
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
       let had = false;
@@ -3761,7 +3790,7 @@ function tick() {
 }
 
 /* ---------- автообновление: страница сама подхватывает новую версию ---------- */
-const APP_V = '25';
+const APP_V = '26';
 window.__mmVersion = v => {
   if (!v || v === APP_V) return;
   const b = $('#banner'); b.hidden = false; b.textContent = 'Вышла новая версия сайта — обновляю страницу…';
