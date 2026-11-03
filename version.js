@@ -1,1 +1,1 @@
-window.__mmVersion && window.__mmVersion('23');
+window.__mmVersion && window.__mmVersion('24');

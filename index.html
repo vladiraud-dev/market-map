@@ -77,7 +77,7 @@ input[type=number]{width:64px}
 #gridMsg:empty{display:none}
 #gridWrap[hidden],#setWrap[hidden],#snapWrap[hidden],#ovWrap[hidden]{display:none}
 #ovWrap{flex:1;min-height:0;display:flex}
-.ovl{width:min(48%,820px);min-width:520px;display:flex;flex-direction:column;border-right:1px solid var(--line);background:var(--top);min-height:0}
+.ovl{width:min(44%,760px);min-width:500px;display:flex;flex-direction:column;border-right:1px solid var(--line);background:var(--top);min-height:0}
 .ovh,.ovr{display:grid;grid-template-columns:var(--ovcols);gap:6px;align-items:center;padding:0 12px}
 .ovh{height:34px;flex:none;color:var(--dim);font-size:11px;border-bottom:1px solid var(--line)}
 .ovh span{cursor:pointer;user-select:none;-webkit-user-select:none;white-space:nowrap}
@@ -91,10 +91,26 @@ input[type=number]{width:64px}
 .ovr .num,.ovh .num{text-align:right}
 .ovr .up{color:var(--up)} .ovr .dn{color:var(--dn)} .ovr .mut{color:var(--mut)} .ovr .hot{color:#f5a142} .ovr .yl{color:#f5d142} .ovr .oi{color:#58a6ff}
 .ovf{flex:none;height:26px;line-height:26px;padding:0 12px;color:var(--dim);font-size:11px;border-top:1px solid var(--line)}
-.ovc{flex:1;min-width:0;display:flex;position:relative}
-.ovEmpty{margin:auto;color:var(--dim);font-size:14px}
-#ovChart .mbox{width:100%;height:100%;border-radius:0;border:0;box-shadow:none}
-#ovChart #mClose{display:none}
+.ovc{flex:1;min-width:0;display:flex;flex-direction:column;position:relative}
+.ovc .mh{flex:none;padding:6px 10px}
+.ovc .mh .seg2{height:30px}
+.ovc .mh .seg2 button{padding:0 10px}
+.ovLab{color:var(--dim);font-size:12px;margin-left:6px}
+.ovc .ovInfo{flex:none;gap:6px;overflow:hidden;white-space:nowrap;min-height:32px;padding:4px 10px}
+.ovc .ovInfo .pl{position:static}
+.ovMain{flex:1;display:flex;min-height:0}
+.ovPanes{flex:1;min-width:0;display:grid;gap:1px;background:var(--line)}
+.ovPanes[data-n="1"]{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr)}
+.ovPanes[data-n="2"]{grid-template-columns:minmax(0,1fr);grid-template-rows:repeat(2,minmax(0,1fr))}
+.ovPanes[data-n="3"],.ovPanes[data-n="4"]{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr))}
+.ovPanes[data-n="3"] .ovp:first-child{grid-column:1 / 3}
+.ovp{position:relative;background:var(--cell);min-width:0;min-height:0}
+.ovp[hidden]{display:none}
+.ovpc{position:absolute;inset:0}
+.ovph{position:absolute;left:6px;top:3px;z-index:2}
+.ovph select{background:var(--card2);color:var(--tx);border:1px solid var(--line2);border-radius:6px;font-size:12px;height:22px;padding:0 3px;cursor:pointer;outline:none}
+.ovp .ld{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);color:var(--dim);font-size:13px;z-index:2;pointer-events:none;text-align:center}
+.ovEmpty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--dim);font-size:14px;background:var(--bg);z-index:5}
 
 /* ---------- ячейка графика ---------- */
 .cell{position:relative;background:var(--cell);min-height:0;min-width:0;overflow:hidden}
@@ -120,7 +136,8 @@ input[type=number]{width:64px}
 .cell:hover .htools{display:flex}
 .htools button,.htools a{width:28px;height:28px;border-radius:7px;background:rgba(35,36,41,.95);border:1px solid var(--line2);color:var(--mut);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:11px;font-weight:700;text-decoration:none}
 .htools button:hover,.htools a:hover{color:var(--tx);border-color:#3b4a66}
-.htools .on{color:var(--acc)}
+.htools .on{color:var(--acc);border-color:var(--acc)}
+.cell .htools .rst{font-size:15px}
 .cbtn{position:absolute;top:6px;right:80px;z-index:3;background:rgba(35,36,41,.95);border:1px solid var(--line2);border-radius:7px;color:var(--mut);cursor:pointer;font-size:11px;padding:0 8px;height:22px}
 .cbtn:hover{color:var(--acc);border-color:var(--acc)}
 .ld{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--dim);font-size:12px;pointer-events:none}
@@ -308,7 +325,7 @@ h4{margin:0;font-size:12px;color:var(--mut);font-weight:600;text-transform:upper
 <header id="top">
   <div class="brand">
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 17 9 9l4 5 3-4 5 7" stroke="#ffb547" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="9" r="2" fill="#22c3a6"/><circle cx="16" cy="10" r="2" fill="#f0506e"/></svg>
-    <span title="Версия 23">Market<b>Map</b></span>
+    <span title="Версия 24">Market<b>Map</b></span>
   </div>
   <div class="sel" title="Биржа"><i class="dot" id="connDot"></i><select id="selEx"><option value="binance">Binance</option><option value="bybit">Bybit</option><option value="okx">OKX</option><option value="bitget">Bitget</option></select></div>
   <div class="seg2" id="segType"><button data-t="futures">Фьючерсы</button><button data-t="spot" title="Спотовый рынок">Спот</button></div>
@@ -334,7 +351,14 @@ h4{margin:0;font-size:12px;color:var(--mut);font-weight:600;text-transform:upper
 <main id="main">
   <div id="banner" hidden></div>
   <section id="gridWrap"><div id="grid"></div><div id="gridMsg"></div></section>
-  <section id="ovWrap" hidden><div class="ovl"><div class="ovh" id="ovHead"></div><div class="ovb" id="ovBody"></div><div class="ovf" id="ovFoot"></div></div><div class="ovc" id="ovChart"><div class="ovEmpty">Выбери монету в списке слева</div></div></section>
+  <section id="ovWrap" hidden><div class="ovl"><div class="ovh" id="ovHead"></div><div class="ovb" id="ovBody"></div><div class="ovf" id="ovFoot"></div></div><div class="ovc" id="ovChart">
+    <div class="mh"><span class="msym" id="ovSym"></span><span class="mk" id="ovMk"></span><span class="mpx" id="ovPx"></span><div class="sp"></div>
+      <span class="ovLab">Графиков</span><div class="seg2 ovN" id="ovN" title="Сколько графиков показывать справа (у каждого свой таймфрейм)"><button data-n="1">1</button><button data-n="2">2</button><button data-n="3">3</button><button data-n="4">4</button></div>
+      <button class="ib sm" id="ovStar" title="Закрепить монету первой">★</button><a class="ib sm" id="ovEx" target="_blank" rel="noopener" title="Открыть на бирже">Биржа ↗</a><a class="ib sm" id="ovTv" target="_blank" rel="noopener">TV ↗</a></div>
+    <div class="mh2 ovInfo" id="ovPills"></div>
+    <div class="ovMain"><div class="mtools" id="ovTools"></div><div class="ovPanes" id="ovPanes" data-n="2"></div></div>
+    <div class="ovEmpty" id="ovEmpty">Выбери монету в списке слева</div>
+  </div></section>
   <section id="setWrap" hidden>
     <div id="setGrid"></div>
     <aside id="oiCol"><div class="oih">Залив OI <small id="oiColWin"></small></div><div id="oiList"></div></aside>
@@ -557,7 +581,7 @@ const DEF = {
   onlyFav: false, onlyLevels: false, panel: false, tab: 'feed', feedFilter: 'all',
   sound: true, volume: 0.7, notif: true, tgOn: false, tgToken: '', tgChat: '', approach: 0,
   oi: { on: true, bf: true, by: true, ok: true, notify: false, pct: 3, win: 15, minVol: 3e6, cool: 30 },
-  oiSort: { k: 'pct', d: -1 }, ovSort: { k: 'v24', d: -1 }, tradfi: false,
+  oiSort: { k: 'pct', d: -1 }, ovSort: { k: 'v24', d: -1 }, ovN: 2, ovTfs: ['1m', '5m', '1h', '15m'], tradfi: false,
 };
 const S = (() => {
   const s = LS.get('settings', {});
@@ -578,6 +602,8 @@ const S = (() => {
   r.sort = 'interest'; if (!['map', 'ov', 'setups', 'snaps'].includes(r.view)) r.view = 'map'; if (!['3x1', '3x2', '3x3', '4x3', '5x3', '6x4'].includes(r.setGrid)) r.setGrid = '3x2'; if (!['3x1', '3x2', '3x3', '4x3', '5x3', '6x4'].includes(r.grid)) r.grid = '3x3'; if (!TF_MS_OK.includes(r.tf)) r.tf = '5m'; if (!['1m', '5m', '15m', '1h'].includes(r.setTf)) r.setTf = '5m';
   if (!r.oiSort || !['s', 'pct', 'pxp', 'usd'].includes(r.oiSort.k) || ![1, -1].includes(r.oiSort.d)) r.oiSort = { k: 'pct', d: -1 };
   if (!r.ovSort || ![1, -1].includes(r.ovSort.d)) r.ovSort = { k: 'v24', d: -1 };
+  r.ovN = [1, 2, 3, 4].includes(r.ovN) ? r.ovN : 2;
+  { const d = ['1m', '5m', '1h', '15m']; r.ovTfs = Array.isArray(r.ovTfs) ? r.ovTfs.slice(0, 4) : d; for (let i = 0; i < 4; i++) if (!TF_MS_OK.includes(r.ovTfs[i])) r.ovTfs[i] = d[i]; }
   r.markets = r.markets.slice(0, 1); r.spotOnly = r.spotOnly !== false; r.onlyFav = false; r.onlyLevels = false;
   if (!/^\d+x\d+$/.test(r.grid)) r.grid = '3x3';
   { const [gc, gr] = r.grid.split('x').map(Number); r.count = gc * gr; }
@@ -994,6 +1020,7 @@ class Chart {
     this.data = []; this.lv = []; this.auto = []; this.draws = []; this.wm = ''; this.oi = null; this.dec = 2; this.tick = 0; this.tfMs = 300e3;
     this.bw = 8; this.off = 0; this.mx = null; this.my = null; this.drag = null; this.pan = null; this.ruler = null; this.tool = null; this.pend = null;
     this.hl = null; this.G = null; this.frozen = null; this.dirty = true; this.W = 10; this.H = 10; this.dpr = 1;
+    this.uz = 1; this.uv = 0; this.rulerArm = false; // uz — масштаб маленького графика (колёсико/щипок), uv — когда трогали
     this.ro = new ResizeObserver(() => this.resize()); this.ro.observe(host);
     const c = this.cv;
     c.addEventListener('mousemove', e => this.hover(e));
@@ -1024,11 +1051,17 @@ class Chart {
       const dw = this.hitDraw(x, y);
       if (dw) { e.preventDefault(); this.o.onDrawDel && this.o.onDrawDel(dw.id); }
     });
-    if (!this.mini) c.addEventListener('wheel', e => {
+    // колёсико / два пальца: вверх-вниз — масштаб, влево-вправо — сдвиг; щипок — масштаб
+    c.addEventListener('wheel', e => {
+      if (!this.G || !this.data.length) return;
       e.preventDefault();
-      const f = e.deltaY < 0 ? 1.12 : 1 / 1.12;
-      this.bw = clamp(this.bw * f, 1.5, 40); this.dirty = true;
+      const k = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? 400 : 1;
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY) && !e.ctrlKey) this.panPx(-e.deltaX * k);
+      else this.zoom(Math.exp(clamp(-e.deltaY * k * (e.ctrlKey ? 0.012 : 0.004), -0.25, 0.25)));
     }, { passive: false });
+    c.addEventListener('gesturestart', e => { e.preventDefault(); this._gs = 1; });
+    c.addEventListener('gesturechange', e => { e.preventDefault(); if (e.scale > 0) { this.zoom(e.scale / (this._gs || 1)); this._gs = e.scale; } });
+    c.addEventListener('gestureend', e => { e.preventDefault(); this._gs = null; });
     CHARTS.add(this);
     this.resize();
   }
@@ -1045,6 +1078,19 @@ class Chart {
     this.dirty = true;
   }
   last() { const n = this.data.length; return n ? this.data[n - 1].c : null; }
+  zoom(f) {
+    if (!(f > 0) || !isFinite(f)) return;
+    if (this.mini) this.uz = clamp(this.uz * f, 0.2, 8); else this.bw = clamp(this.bw * f, 1, 40);
+    this.uv = Date.now(); this.dirty = true;
+  }
+  panPx(dx) {
+    const G = this.G; if (!G) return;
+    const n = G.plotW / G.bw;
+    this.off = clamp(this.off + dx / G.bw, -n * 0.7, Math.max(0, this.data.length - 5));
+    this.uv = Date.now(); this.dirty = true;
+  }
+  resetView() { this.uz = 1; this.off = 0; this.uv = 0; this.ruler = null; this.rulerArm = false; this.dirty = true; }
+  get changed() { return this.uz !== 1 || Math.abs(this.off) > 0.5; }
   upsert(c) {
     const d = this.data, n = d.length, L = n ? d[n - 1] : null;
     if (L && L.t === c.t) d[n - 1] = c;
@@ -1103,7 +1149,7 @@ class Chart {
     const [x, y] = this.pt(e); this.mx = x; this.my = y;
     if (this.ruler && !this.ruler.done) this.ruler.b = this.ptAt(x, y);
     if (this.pend) this.pend.b = this.ptAt(x, y, true);
-    const busy = this.ruler || (this.tool && this.tool !== 'cursor');
+    const busy = this.ruler || this.rulerArm || (this.tool && this.tool !== 'cursor');
     const l = busy ? null : this.hit(y); this.hl = l ? l.id : null;
     this.cv.style.cursor = l ? 'ns-resize' : (e.shiftKey || busy) ? 'crosshair' : (this.mini ? 'pointer' : 'crosshair');
     this.dirty = true;
@@ -1114,8 +1160,8 @@ class Chart {
     const [x, y] = this.pt(e);
     if (!this.G) return;
     // линейка: Shift + клик (или инструмент «линейка»)
-    if (e.shiftKey || this.tool === 'ruler') {
-      e.preventDefault(); this._noClick = true;
+    if (e.shiftKey || this.tool === 'ruler' || this.rulerArm) {
+      e.preventDefault(); this._noClick = true; this.rulerArm = false; this.uv = Date.now(); if (this.o.onRuler) this.o.onRuler();
       const p = this.ptAt(x, y);
       if (this.ruler && !this.ruler.done) { this.ruler.b = p; this.ruler.done = true; }
       else this.ruler = { a: p, b: p, done: false, x0: x, y0: y };
@@ -1126,7 +1172,7 @@ class Chart {
     if (this.tool && this.tool !== 'cursor') { e.preventDefault(); this._noClick = true; this.toolClick(x, y); return; }
     const l = this.hit(y);
     if (l) { this.drag = { l, p: l.p, y0: y, moved: false }; this.frozen = this.G ? [this.G.lo, this.G.hi] : null; e.preventDefault(); }
-    else if (!this.mini) { this.pan = { x0: x, off0: this.off }; this.cv.style.cursor = 'grabbing'; }
+    else { this.pan = { x0: x, off0: this.off, moved: false }; if (!this.mini) this.cv.style.cursor = 'grabbing'; e.preventDefault(); }
     if (this.drag || this.pan) { window.addEventListener('mousemove', this._mm); window.addEventListener('mouseup', this._mu); }
   }
   toolClick(x, y) {
@@ -1146,8 +1192,11 @@ class Chart {
       if (Math.abs(y - this.drag.y0) > 2) this.drag.moved = true;
       if (this.drag.moved) { const p = this.pAt(y); if (p > 0) this.drag.p = this.round(p); }
     } else if (this.G) {
-      const n = this.G.plotW / this.bw;
-      this.off = clamp(this.pan.off0 + (x - this.pan.x0) / this.bw, -n * 0.7, Math.max(0, this.data.length - 5));
+      if (!this.pan.moved && Math.abs(x - this.pan.x0) < 4) return;
+      if (!this.pan.moved) { this.pan.moved = true; this.cv.style.cursor = 'grabbing'; }
+      const bw = this.G.bw, n = this.G.plotW / bw;
+      this.off = clamp(this.pan.off0 + (x - this.pan.x0) / bw, -n * 0.7, Math.max(0, this.data.length - 5));
+      this.uv = Date.now();
     }
     this.dirty = true;
   }
@@ -1162,7 +1211,10 @@ class Chart {
       if (d.moved && this.o.onMove) this.o.onMove(d.l.id, d.p, this.last());
       this.dirty = true;
     }
-    if (this.pan) { this.pan = null; this.cv.style.cursor = 'crosshair'; }
+    if (this.pan) {
+      if (this.pan.moved) { this._noClick = true; setTimeout(() => { this._noClick = false; }, 60); }
+      this.pan = null; this.cv.style.cursor = this.mini ? 'pointer' : 'crosshair';
+    }
     window.removeEventListener('mousemove', this._mm); window.removeEventListener('mouseup', this._mu);
   }
   pill(x, y, text, bg, fg, alignRight) {
@@ -1192,9 +1244,9 @@ class Chart {
     const pBot = H - tb - oiH - (hasOI ? 10 : 0) - (mini ? 2 : 4);
     const volH = Math.round((pBot - top) * (mini ? 0.2 : 0.15));
     const cBot = pBot - Math.round(volH * 0.6);
-    const bw = mini ? clamp(plotW / (this.o.bars || 80), this.o.minBw || 2, 10) : this.bw;
+    const bw = mini ? clamp(clamp(plotW / (this.o.bars || 80), this.o.minBw || 2, 10) * this.uz, 0.5, 40) : this.bw;
     const marg = this.o.marg != null ? this.o.marg : (mini ? 3 : 6);
-    const rIdx = n - 1 + marg - (mini ? 0 : this.off);
+    const rIdx = n - 1 + marg - this.off;
     const i0 = Math.max(0, Math.ceil(rIdx - plotW / bw + 0.5)), i1 = Math.min(n - 1, Math.floor(rIdx));
     const xOf = i => plotR - (rIdx - i + 0.5) * bw;
 
@@ -1418,7 +1470,7 @@ class Chart {
       if (mx != null && mx <= plotR) { const k = Math.round(rIdx + 0.5 - (plotR - mx) / bw); if (k >= 0 && k < n) ci = k; }
       const c = d[ci], ch = (c.c / c.o - 1) * 100, up = c.c >= c.o;
       g.textAlign = 'left'; g.textBaseline = 'top'; g.font = '11px ' + FM;
-      let x = 8; const y = 2;
+      let x = this.o.infoX || 8; const y = this.o.infoY || 2;
       const seg = (lab, val, col) => { g.fillStyle = COL.dim; g.fillText(lab, x, y); x += g.measureText(lab).width + 3; g.fillStyle = col; g.fillText(val, x, y); x += g.measureText(val).width + 10; };
       const cc = up ? COL.up : COL.dn;
       seg('ОТКР', fmtP(c.o, this.dec), cc); seg('МАКС', fmtP(c.h, this.dec), cc); seg('МИН', fmtP(c.l, this.dec), cc); seg('ЗАКР', fmtP(c.c, this.dec), cc);
@@ -1441,6 +1493,7 @@ function levelsChanged(m, s) {
   { const c = CARDS.get(m + '|' + s); if (c) { c.chart.lv = arr; c.chart.dirty = true; c.hd = true; } }
   if (MODAL.open && MODAL.m === m && MODAL.s === s) { MODAL.chart.lv = arr; MODAL.chart.dirty = true; renderModalLevels(); }
   { const sc = SCARDS.get(m + '|' + s); if (sc) { sc.chart.lv = arr; sc.chart.dirty = true; } }
+  if (OVP.m === m && OVP.s === s) for (const p of OVP.panes) { p.chart.lv = arr; p.chart.dirty = true; }
   refreshSubs(); panelDirty();
 }
 function addLevel(m, s, p, cur) {
@@ -1525,6 +1578,7 @@ function drawsChanged(k) {
   const c = CARDS.get(k); if (c) { c.chart.draws = arr; c.chart.dirty = true; }
   const sc = SCARDS.get(k); if (sc) { sc.chart.draws = arr; sc.chart.dirty = true; }
   if (MODAL.open && MODAL.m + '|' + MODAL.s === k) { MODAL.chart.draws = arr; MODAL.chart.dirty = true; }
+  if (OVP.m && OVP.m + '|' + OVP.s === k) for (const p of OVP.panes) { p.chart.draws = arr; p.chart.dirty = true; }
 }
 function addDraw(k, obj) { obj.id = uid(); (DRAWS[k] || (DRAWS[k] = [])).push(obj); drawsChanged(k); }
 function delDraw(k, id) { DRAWS[k] = (DRAWS[k] || []).filter(d => d.id !== id); if (!DRAWS[k].length) delete DRAWS[k]; drawsChanged(k); }
@@ -1768,6 +1822,7 @@ function updTicker(m, s, u) {
 function onKline(m, s, tf, c) {
   if (tf === S.tf) { const cd = CARDS.get(m + '|' + s); if (cd && cd.loaded) cd.chart.upsert(c); }
   if (MODAL.open && MODAL.m === m && MODAL.s === s && MODAL.tf === tf && MODAL.loaded) MODAL.chart.upsert(c);
+  if (OVP.m === m && OVP.s === s) for (const p of OVP.panes) if (p.loaded && p.tf === tf) p.chart.upsert(c);
   updTicker(m, s, { price: c.c });
 }
 function klineTopic(m, s, tf) { const ex = MK[m].ex; return ex === 'binance' ? s.toLowerCase() + '@kline_' + tf : ex === 'bitget' ? (BGW_TF[tf] ? 'candle' + BGW_TF[tf] + '.' + s : null) : ex === 'okx' ? 'candle' + OK_TF[tf] + '.' + s : 'kline.' + BY_TF[tf] + '.' + s; }
@@ -1781,6 +1836,10 @@ function refreshSubs() {
     if (MK[c.m].ex !== 'binance') want[c.m].add(tickerTopic(c.m, c.s));
   }
   if (MODAL.open) { const kt = klineTopic(MODAL.m, MODAL.s, MODAL.tf); if (kt) want[MODAL.m].add(kt); want[MODAL.m].add(tickerTopic(MODAL.m, MODAL.s)); }
+  if (S.view === 'ov' && OVP.m && MK[OVP.m]) {
+    want[OVP.m].add(tickerTopic(OVP.m, OVP.s));
+    OVP.panes.forEach((p, i) => { if (i < S.ovN && p.loaded) { const kt = klineTopic(OVP.m, OVP.s, p.tf); if (kt) want[OVP.m].add(kt); } });
+  }
   for (const l of LEVELS) if (l.st === 'armed' && MK[l.m]) want[l.m].add(tickerTopic(l.m, l.s));
   for (const m in MK) FEEDS[m].set(want[m]);
 }
@@ -1820,7 +1879,7 @@ function makeCard(m, s) {
   const r = rec(m, s), k = m + '|' + s;
   const el = document.createElement('div');
   el.className = 'cell';
-  el.innerHTML = `<div class="cc"></div><div class="pills">${'<span class="pl cp"></span>'.repeat(6)}<span class="pin" title="Закреплена">★</span><span class="lvb" title="Уровни с алертом"></span></div><div class="htools"><button data-a="pin" title="Закрепить первой">★</button><button data-a="copy" title="Скопировать тикер">⧉</button><a data-a="ex" target="_blank" rel="noopener" title="Открыть на бирже">${exAbbr(m)}</a><a data-a="tv" target="_blank" rel="noopener" title="Открыть в TradingView">TV</a></div><div class="ld">загрузка…</div>`;
+  el.innerHTML = `<div class="cc"></div><div class="pills">${'<span class="pl cp"></span>'.repeat(6)}<span class="pin" title="Закреплена">★</span><span class="lvb" title="Уровни с алертом"></span></div><div class="htools"><button data-a="pin" title="Закрепить первой">★</button><button data-a="copy" title="Скопировать тикер">⧉</button><a data-a="ex" target="_blank" rel="noopener" title="Открыть на бирже">${exAbbr(m)}</a><a data-a="tv" target="_blank" rel="noopener" title="Открыть в TradingView">TV</a><button data-a="ruler" title="Линейка: нажми и протяни по графику (или Shift + клик)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 17 17 3l4 4L7 21z"/><path d="m7 13 2 2M10 10l2 2M13 7l2 2"/></svg></button><button data-a="reset" class="rst" title="Вернуть масштаб (после колёсика и перетаскивания)">⟲</button></div><div class="ld">загрузка…</div>`;
   const card = { m, s, k, tf: S.tf, el, r, vis: false, hd: true, loaded: false, dead: false, queued: false, leftAt: 0 };
   card.q = { pl: [...el.querySelectorAll('.pills .pl')], lvb: $('.lvb', el), pin: $('.pin', el), pinBtn: $('[data-a=pin]', el), ld: $('.ld', el) };
   card.chart = new Chart($('.cc', el), {
@@ -1838,9 +1897,20 @@ function makeCard(m, s) {
     const b = e.target.closest('[data-a]'); if (!b) return;
     if (b.dataset.a === 'pin') { e.preventDefault(); toggleFav(m, s); }
     else if (b.dataset.a === 'copy') { e.preventDefault(); copyText(r.base || s); }
+    else miniTool(card.chart, b, e);
   });
   el._card = card; IO.observe(el);
   return card;
+}
+// кнопки маленького графика: линейка и «вернуть масштаб»
+function miniTool(ch, b, e) {
+  if (b.dataset.a === 'ruler') {
+    e.preventDefault();
+    const on = !ch.rulerArm; for (const x of CHARTS) if (x.rulerArm) { x.rulerArm = false; x.dirty = true; }
+    $$('.htools [data-a=ruler].on').forEach(q => q.classList.remove('on'));
+    ch.rulerArm = on; ch.ruler = null; ch.dirty = true; b.classList.toggle('on', on);
+    ch.o.onRuler = () => b.classList.remove('on');
+  } else if (b.dataset.a === 'reset') { e.preventDefault(); ch.resetView(); }
 }
 function killCard(c) { c.dead = true; c.chart.destroy(); IO.unobserve(c.el); c.el.remove(); }
 const KQ = { q: [], run: 0 };
@@ -1855,7 +1925,7 @@ function pumpKQ() {
 }
 async function loadCard(c) {
   try {
-    const d = await klines(c.m, c.s, c.tf, 200);
+    const d = await klines(c.m, c.s, c.tf, 300);
     if (c.dead) return;
     const first = !c.loaded;
     c.chart.data = d; c.loaded = true; c.leftAt = 0;
@@ -2028,7 +2098,9 @@ const MODAL = { open: false, m: null, s: null, tf: '5m', chart: null, tok: 0, lo
 function openChart(m, s, opt) {
   if (!MK[m]) return;
   MODAL.m = m; MODAL.s = s; MODAL.tf = (opt && opt.tf) || S.tf; MODAL.open = true; MODAL.setup = (opt && opt.setup) || null;
-  if (!MODAL.docked) $('#modal').hidden = false;
+  $('#modal').hidden = false;
+  for (const x of CHARTS) if (x.rulerArm) { x.rulerArm = false; x.dirty = true; }
+  $$('.htools [data-a=ruler].on').forEach(q => q.classList.remove('on'));
   if (!MODAL.chart) {
     MODAL.chart = new Chart($('#mChart'), {
       mini: false,
@@ -2060,7 +2132,7 @@ function setTool(t) {
   $$('#mTools [data-tool]').forEach(b => b.classList.toggle('on', b.dataset.tool === t));
 }
 function closeChart() {
-  if (!MODAL.open || MODAL.docked) return;
+  if (!MODAL.open) return;
   MODAL.open = false; MODAL.tok++; $('#modal').hidden = true;
   refreshSubs();
 }
@@ -2318,7 +2390,14 @@ function calcMetric(m, s, key, per) {
   return null;
 }
 function seedingNow() { return S.markets.some(m => MD.prog[m].total && MD.prog[m].done < MD.prog[m].total); }
-function anyDrag() { for (const c of CARDS.values()) if (c.chart.drag) return true; return false; }
+function anyDrag() {
+  for (const c of CARDS.values()) {
+    const ch = c.chart;
+    if (ch.drag || ch.pan || ch.rulerArm || (ch.ruler && !ch.ruler.done)) return true;
+    if (ch.uv && Date.now() - ch.uv < 20000) return true; // двигал/масштабировал/мерил — 20 с не пересортировываем
+  }
+  return false;
+}
 function autoResort() {
   if (S.view !== 'map' || S.frozen || S.resort <= 0 || anyDrag()) return;
   const every = seedingNow() ? Math.min(8, S.resort) : S.resort;
@@ -2913,7 +2992,7 @@ const SCARDS = new Map();
 function makeSetupCard(st) {
   const el = document.createElement('div');
   el.className = 'cell scell';
-  el.innerHTML = `<div class="cc"></div><div class="pills"></div><button class="cbtn" title="Поставить алерт на этот уровень">🔔 алерт</button><div class="htools"><button data-a="snap" title="Сохранить снимок во вкладку «Снимки»">📷</button><button data-a="copy" title="Скопировать тикер">⧉</button><a data-a="ex" target="_blank" rel="noopener" title="Открыть на бирже">${exAbbr(st.m)}</a><a data-a="tv" target="_blank" rel="noopener" title="TradingView">TV</a></div>`;
+  el.innerHTML = `<div class="cc"></div><div class="pills"></div><button class="cbtn" title="Поставить алерт на этот уровень">🔔 алерт</button><div class="htools"><button data-a="snap" title="Сохранить снимок во вкладку «Снимки»">📷</button><button data-a="copy" title="Скопировать тикер">⧉</button><a data-a="ex" target="_blank" rel="noopener" title="Открыть на бирже">${exAbbr(st.m)}</a><a data-a="tv" target="_blank" rel="noopener" title="TradingView">TV</a><button data-a="ruler" title="Линейка: нажми и протяни по графику (или Shift + клик)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 17 17 3l4 4L7 21z"/><path d="m7 13 2 2M10 10l2 2M13 7l2 2"/></svg></button><button data-a="reset" class="rst" title="Вернуть масштаб (после колёсика и перетаскивания)">⟲</button></div>`;
   const c = { k: st.k, m: st.m, s: st.s, el, st };
   c.q = { pills: $('.pills', el), bell: $('.cbtn', el) };
   const open = () => openChart(c.m, c.s, { auto: c.st.lines || [], tf: c.st.tf || S.setTf, setup: c.st });
@@ -2933,6 +3012,7 @@ function makeSetupCard(st) {
     const b = e.target.closest('[data-a]'); if (!b) return;
     if (b.dataset.a === 'snap') { e.preventDefault(); takeSnapshot(c.st); b.textContent = '✓'; setTimeout(() => { b.textContent = '📷'; }, 1200); }
     else if (b.dataset.a === 'copy') { e.preventDefault(); copyText(baseOf(c.m, c.s)); }
+    else miniTool(c.chart, b, e);
   });
   return c;
 }
@@ -2955,7 +3035,8 @@ function renderSetups() {
   const sg = $('#setGrid');
   sg.style.gridTemplateColumns = `repeat(${gc},minmax(0,1fr))`;
   sg.style.gridTemplateRows = `repeat(${gr},minmax(0,1fr))`;
-  const list = SETUP.list.filter(x => x.score >= SET_MIN).slice(0, N);
+  const seenB = new Set();
+  const list = SETUP.list.filter(x => { if (x.score < SET_MIN) return false; const b = normBase(baseOf(x.m, x.s)); if (seenB.has(b)) return false; seenB.add(b); return true; }).slice(0, N);
   const keep = new Set(list.map(x => x.k));
   for (const [k, c] of SCARDS) if (!keep.has(k)) { c.chart.destroy(); c.el.remove(); SCARDS.delete(k); }
   let i = 0;
@@ -2984,24 +3065,99 @@ const OV_COLS = [
   ['b', 'Монета', 0], ['p', 'Цена', 1], ['c5', '5м %', 1], ['c15', '15м %', 1], ['c60', '1ч %', 1], ['c24', '24ч %', 1],
   ['v24', 'Объём 24ч', 1], ['v5', 'Объём 5м', 1], ['sp', 'Всплеск', 1], ['nt', 'NATR', 1], ['oi', 'OI %', 1],
 ];
-// встраиваем окно большого графика в правую часть «Обзора» (и возвращаем обратно при выходе)
-function ovDock(on) {
-  const box = $('.mbox', $('#modal')) || $('.mbox', $('#ovChart')); if (!box) return;
-  if (on && !MODAL.docked) {
-    $('#ovChart').appendChild(box); MODAL.docked = true; $('#modal').hidden = true;
-    if (MODAL.chart) MODAL.chart.resize();
-  } else if (!on && MODAL.docked) {
-    MODAL.docked = false; $('#modal').appendChild(box);
-    if (MODAL.open) { MODAL.open = false; MODAL.tok++; refreshSubs(); }
+// правая часть «Обзора»: 1–4 графика выбранной монеты, у каждого свой таймфрейм; на всех можно рисовать
+const OVP = { m: null, s: null, panes: [], tool: 'cursor', tmr: 0, _h: '' };
+function ovInit() {
+  $('#ovTools').innerHTML = $('#mTools').innerHTML;
+  for (let i = 0; i < 4; i++) {
+    const el = document.createElement('div'); el.className = 'ovp';
+    el.innerHTML = `<div class="ovpc"></div><div class="ovph"><select title="Таймфрейм этого графика">${TFS.map(t => `<option value="${t}">${TF_LAB[t]}</option>`).join('')}</select></div><div class="ld"></div>`;
+    const p = { i, el, tf: S.ovTfs[i], tok: 0, loaded: false, ld: $('.ld', el), sel: $('select', el) };
+    p.sel.value = p.tf;
+    p.sel.onchange = () => { p.tf = p.sel.value; S.ovTfs[i] = p.tf; saveS(); ovPaneLoad(p); };
+    p.chart = new Chart($('.ovpc', el), {
+      mini: false, infoX: 64,
+      onAdd: (pp, cur) => addLevel(OVP.m, OVP.s, pp, cur), onMove: (id, pp, cur) => moveLevel(id, pp, cur), onDel: id => delLevel(id),
+      onDraw: obj => addDraw(OVP.m + '|' + OVP.s, obj), onDrawDel: id => delDraw(OVP.m + '|' + OVP.s, id), onToolDone: () => ovSetTool('cursor'),
+    });
+    $('#ovPanes').appendChild(el); OVP.panes.push(p);
   }
-  const em = $('.ovEmpty', $('#ovChart')); if (em) em.style.display = on && MODAL.open ? 'none' : '';
+  $('#ovN').addEventListener('click', e => { const b = e.target.closest('[data-n]'); if (b) ovSetN(+b.dataset.n); });
+  $('#ovTools').addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b || !OVP.m) return;
+    if (b.dataset.act === 'clear') { clearDraws(OVP.m + '|' + OVP.s); return; }
+    ovSetTool(b.dataset.tool);
+  });
+  $('#ovStar').onclick = () => { if (OVP.m) { toggleFav(OVP.m, OVP.s); $('#ovStar').classList.toggle('on', FAVS.has(OVP.m + '|' + OVP.s)); } };
+  ovSetN(S.ovN, true);
+}
+function ovSetN(n, quiet) {
+  S.ovN = clamp(n | 0, 1, 4); if (!quiet) saveS();
+  $('#ovPanes').dataset.n = S.ovN;
+  $$('#ovN button').forEach(b => b.classList.toggle('on', +b.dataset.n === S.ovN));
+  OVP.panes.forEach((p, i) => { p.el.hidden = i >= S.ovN; if (!p.el.hidden && OVP.m && !p.loaded && !p.busy) ovPaneLoad(p); });
+  refreshSubsSoon();
+}
+function ovSetTool(t) {
+  OVP.tool = t || 'cursor';
+  for (const p of OVP.panes) { const ch = p.chart; ch.tool = OVP.tool; ch.pend = null; if (OVP.tool !== 'ruler') ch.ruler = ch.ruler && ch.ruler.done ? ch.ruler : null; ch.dirty = true; }
+  $$('#ovTools [data-tool]').forEach(b => b.classList.toggle('on', b.dataset.tool === OVP.tool));
+}
+function ovShow(m, s) {
+  const same = OVP.m === m && OVP.s === s, r = rec(m, s), k = m + '|' + s;
+  OVP.m = m; OVP.s = s; OVP._h = '';
+  $('#ovEmpty').style.display = 'none';
+  $('#ovSym').textContent = dispSym(m, s);
+  const mk = $('#ovMk'); mk.textContent = MK[m].label; mk.className = 'mk ' + exCls(m);
+  $('#ovEx').href = exUrl(m, s); $('#ovTv').href = tvUrl(m, s); $('#ovStar').classList.toggle('on', FAVS.has(k));
+  for (const p of OVP.panes) { const ch = p.chart; ch.tick = r.tick; ch.dec = decOf(r); ch.lv = LIDX.get(k) || []; ch.draws = DRAWS[k] || []; ch.auto = []; ch.dirty = true; }
+  if (same && !OVP.stale) return;
+  OVP.stale = false;
+  ovSetTool('cursor');
+  for (const p of OVP.panes) { p.tok++; p.loaded = false; p.busy = false; const ch = p.chart; ch.data = []; ch.oi = null; ch.ruler = null; ch.pend = null; ch.dirty = true; p.ld.textContent = 'загрузка…'; p.ld.style.display = ''; }
+  ovHdr();
+  // стрелками листают быстро — свечи грузим только для монеты, на которой остановились
+  clearTimeout(OVP.tmr); OVP.tmr = setTimeout(() => { OVP.panes.forEach((p, i) => { if (i < S.ovN) ovPaneLoad(p); }); }, 150);
+  refreshSubsSoon();
+}
+async function ovPaneLoad(p) {
+  const { m, s } = OVP; if (!m) return;
+  const tf = p.tf, tok = ++p.tok, ch = p.chart;
+  p.loaded = false; p.busy = true; ch.data = []; ch.oi = null; ch.off = 0; ch.bw = 6; ch.tfMs = TF_MS[tf]; ch.ruler = null; ch.pend = null; ch.dirty = true;
+  p.ld.style.display = ''; p.ld.textContent = 'загрузка…';
+  try {
+    const d = await klines(m, s, tf, 499);
+    if (tok !== p.tok) return;
+    ch.data = d; p.loaded = true; p.ld.style.display = 'none';
+    const r = rec(m, s); ch.dec = r.tick ? decOf(r) : decFromPrice(d.length ? d[d.length - 1].c : r.price); ch.dirty = true;
+    refreshSubsSoon();
+  } catch (e) {
+    if (tok === p.tok) p.ld.textContent = 'Не удалось загрузить свечи: ' + netErrText(MK[m].host, e);
+    return;
+  } finally { if (tok === p.tok) p.busy = false; }
+  // открытый интерес — только на первом графике (данные OI у бирж с жёстким лимитом запросов)
+  if (p.i === 0 && MK[m].fut) {
+    try {
+      const h = await oiHist(m, s, OI_PER[tf], 500, false);
+      if (tok !== p.tok) return;
+      const live = (OIM.ser[m] && OIM.ser[m].get(s)) || [], lastT = h.length ? h[h.length - 1].t : 0;
+      for (const q of live) if (q[0] > lastT + 30e3) h.push({ t: q[0], v: q[1] });
+      ch.oi = h; ch.dirty = true;
+    } catch (e) {}
+  }
+}
+function ovHdr() {
+  const { m, s } = OVP; if (!m) return;
+  const r = rec(m, s); $('#ovPx').textContent = r.price ? fmtP(r.price, OVP.panes[0].chart.dec) : '';
+  let st = '';
+  if (MK[m].fut) { const dd = OIM.delta[m] && OIM.delta[m].get(s); if (dd) st = `OI ${fmtUsd(dd.usd)} · за ${S.oi.win}м ${fmtPct(dd.pct, 2)}`; }
+  const html = metricPills(m, s).filter(x => x.t).map(x => `<span class="pl ${x.c}" title="${x.h}">${x.t}</span>`).join('') + (st ? `<span class="mst">${st}</span>` : '');
+  if (OVP._h !== html) { $('#ovPills').innerHTML = html; OVP._h = html; }
 }
 function ovSelect(s, scroll) {
   const m = S.markets[0]; if (!s) return;
   OV.sel = s;
-  ovDock(true);
-  openChart(m, s, { tf: MODAL.tf || S.tf });
-  const em = $('.ovEmpty', $('#ovChart')); if (em) em.style.display = 'none';
+  ovShow(m, s);
   $$('#ovBody .ovr').forEach(r => r.classList.toggle('sel', r.dataset.s === s));
   if (scroll) { const el = $(`#ovBody .ovr[data-s="${CSS.escape(s)}"]`); if (el) el.scrollIntoView({ block: 'nearest' }); }
 }
@@ -3031,7 +3187,7 @@ function ovRender(pick) {
     + (fut ? `<span class="num${x.oi >= 1 ? ' oi' : x.oi != null && x.oi < 0 ? ' dn' : ' mut'}">${x.oi != null ? (x.oi > 0 ? '+' : '') + x.oi.toFixed(1) : '—'}</span>` : '') + '</div>').join('');
   const body = $('#ovBody'); if (body._h !== html) { body.innerHTML = html || `<div class="empty" style="padding:30px;text-align:center;color:var(--dim)">${q ? 'Ничего не найдено' : 'Нет монет под фильтр объёма — уменьши «Объём от»'}</div>`; body._h = html; }
   $('#ovFoot').textContent = `${MK[m].label} · монет: ${rows.length} · ↑↓ — следующая/предыдущая монета · клик по заголовку — сортировка`;
-  if ((pick || !OV.sel || !rows.some(r => r.s === OV.sel)) && rows.length && (!MODAL.open || MODAL.m !== m || !rows.some(r => r.s === MODAL.s))) ovSelect(rows[0].s);
+  if (rows.length && (pick || OVP.m !== m || !rows.some(r => r.s === OV.sel))) ovSelect((rows.find(r => r.s === OV.sel) || rows[0]).s);
 }
 function renderOiCol() {
   const m = S.markets[0], col = $('#oiCol');
@@ -3085,6 +3241,10 @@ async function idbOp(mode, fn) {
 async function snapsLoad() {
   const all = await idbOp('readonly', st => st.getAll());
   SNAPS.list = (all || []).sort((a, b) => b.t - a.t);
+  { // старые дубли (несколько снимков одной монеты) — оставляем самый свежий
+    const seen = new Set();
+    SNAPS.list = SNAPS.list.filter(q => { const key = q.m + '|' + normBase(q.base || q.s); if (seen.has(key)) { idbOp('readwrite', st => st.delete(q.id)); return false; } seen.add(key); return true; });
+  }
   snapsCheck(); renderSnaps();
 }
 const fmtDT = t => { const d = new Date(t); return pad2(d.getDate()) + '.' + pad2(d.getMonth() + 1) + ' ' + pad2(d.getHours()) + ':' + pad2(d.getMinutes()); };
@@ -3114,6 +3274,9 @@ function takeSnapshot(st) {
     const og = out.getContext('2d'); og.fillStyle = '#1b1c21'; og.fillRect(0, 0, W, H); og.drawImage(ch.cv, 0, 0);
     const snap = { id: uid(), t: Date.now(), m: st.m, s: st.s, base: r.base || st.s, label: st.label, dir: st.dir, type: st.type, tf, det: setupDetail(st, dec).join(' · '),
       L: st.L || null, t0: st.t0 || null, tl: st.tl || null, lines: st.lines || [], atr: st.atr || null, price: r.price || B[B.length - 1].c, img: out.toDataURL('image/jpeg', 0.85) };
+    // одна монета — один снимок: старый снимок этой же монеты заменяем новым
+    for (const old of SNAPS.list.filter(q => q.m === snap.m && normBase(q.base || q.s) === normBase(snap.base))) idbOp('readwrite', s2 => s2.delete(old.id));
+    SNAPS.list = SNAPS.list.filter(q => !(q.m === snap.m && normBase(q.base || q.s) === normBase(snap.base)));
     SNAPS.list.unshift(snap);
     idbOp('readwrite', s2 => s2.put(snap));
     while (SNAPS.list.length > 80) { const old = SNAPS.list.pop(); idbOp('readwrite', s2 => s2.delete(old.id)); }
@@ -3311,7 +3474,8 @@ function renderTop() {
   $('#btnSpotOnly').textContent = S.spotOnly ? '✓ Без фьючей' : 'Без фьючей';
   $$('#viewTabs button').forEach(b => b.classList.toggle('on', b.dataset.v === v));
   $('#gridWrap').hidden = v !== 'map'; $('#setWrap').hidden = v !== 'setups'; $('#snapWrap').hidden = v !== 'snaps'; $('#ovWrap').hidden = v !== 'ov';
-  ovDock(v === 'ov');
+  if (v !== 'ov' && OVP.m) OVP.stale = true;
+  refreshSubsSoon();
   const tfs = v === 'setups' ? SET_TFS : TFS, cur = v === 'setups' ? S.setTf : S.tf;
   $('#selTf').innerHTML = tfs.map(t => `<option value="${t}">${TF_LAB[t]}</option>`).join(''); $('#selTf').value = cur;
   $('#tfWrap').style.display = v === 'snaps' || v === 'ov' ? 'none' : '';
@@ -3339,6 +3503,7 @@ function permStatus() {
     : '<span class="mut">ещё не разрешено</span>';
 }
 function setupUI() {
+  ovInit();
   const hdAll = () => { for (const c of CARDS.values()) c.hd = true; };
   const setMarket = m => {
     if (!MK[m] || m === S.markets[0]) return;
@@ -3471,8 +3636,10 @@ function setupUI() {
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
       let had = false;
-      for (const ch of CHARTS) if (ch.ruler || ch.pend) { ch.ruler = null; ch.pend = null; ch.dirty = true; had = true; }
-      if (MODAL.chart && MODAL.chart.tool && MODAL.chart.tool !== 'cursor') { setTool('cursor'); had = true; }
+      for (const ch of CHARTS) if (ch.ruler || ch.pend || ch.rulerArm) { ch.ruler = null; ch.pend = null; ch.rulerArm = false; ch.dirty = true; had = true; }
+      $$('.htools [data-a=ruler].on').forEach(q => q.classList.remove('on'));
+      if (MODAL.open && MODAL.chart && MODAL.chart.tool && MODAL.chart.tool !== 'cursor') { setTool('cursor'); had = true; }
+      if (S.view === 'ov' && OVP.tool !== 'cursor') { ovSetTool('cursor'); had = true; }
       if (had) return;
       if (!$('#settings').hidden) $('#settings').hidden = true;
       else if (MODAL.open) closeChart();
@@ -3491,7 +3658,7 @@ function setupUI() {
 /* =====================================================================
    ЦИКЛ ОТРИСОВКИ
    ===================================================================== */
-let lastHdr = 0, lastDist = 0, lastMdSt = 0, lastSetLive = 0, lastOv = 0;
+let lastHdr = 0, lastDist = 0, lastMdSt = 0, lastSetLive = 0, lastOv = 0, lastOvHdr = 0;
 function guard(tag, fn) {
   try { fn(); } catch (e) { if (window.__mmShowErr) window.__mmShowErr(tag + ': ' + (e && e.message || e) + (e && e.stack ? '\n  ' + String(e.stack).split('\n').slice(0, 2).join('\n  ') : '')); }
 }
@@ -3517,7 +3684,11 @@ function tick() {
   if (Date.now() - lastDist > 1500) { lastDist = Date.now(); if (S.panel && (S.tab === 'levels' || S.tab === 'oi')) PD = true; if (MODAL.open) guard('уровни', renderModalLevels); }
   if (PD && Date.now() - lastPanel > 400) guard('панель', renderPanel);
   if (Date.now() - lastMdSt > 1000) { lastMdSt = Date.now(); guard('статус', renderMdStatus); guard('сортировка', autoResort); }
-  if (S.view === 'ov' && Date.now() - lastOv > 2000) { lastOv = Date.now(); guard('обзор', () => ovRender()); }
+  if (S.view === 'ov') {
+    if (Date.now() - lastOv > 2000) { lastOv = Date.now(); guard('обзор', () => ovRender()); }
+    for (const p of OVP.panes) if (!p.el.hidden && p.chart.dirty) guard('обзор ' + p.tf, () => p.chart.draw());
+    if (doHdr && Date.now() - lastOvHdr > 900) { lastOvHdr = Date.now(); guard('шапка обзора', ovHdr); }
+  }
   if (S.view === 'setups') {
     if (Date.now() - lastSetLive > 2000) { lastSetLive = Date.now(); guard('сетапы', setupLive); guard('OI', renderOiCol); }
     for (const c of SCARDS.values()) if (c.chart.dirty) guard('сетап ' + c.s, () => c.chart.draw());
@@ -3525,7 +3696,7 @@ function tick() {
 }
 
 /* ---------- автообновление: страница сама подхватывает новую версию ---------- */
-const APP_V = '23';
+const APP_V = '24';
 window.__mmVersion = v => {
   if (!v || v === APP_V) return;
   const b = $('#banner'); b.hidden = false; b.textContent = 'Вышла новая версия сайта — обновляю страницу…';
@@ -3564,7 +3735,7 @@ async function init() {
   setInterval(() => mdSync(), 5 * 60e3);
   setInterval(checkVersion, 15000);
   setInterval(() => guard('снимки', snapsCheck), 10000);
-  window.MM = { SYMS: SYM, OV, ovRender, snapsCheck, RL, api, S, LEVELS: () => LEVELS, EVENTS: () => EVENTS, OIM, FEEDS, CARDS, MODAL, NET, MD, SYM, fire, openChart, addLevel, calcMetric, buildGrid, SETUP, setupScan, SCARDS, detectKnife, detectSetup, liveBars, SNAPS, DRAWS: () => DRAWS, CHARTS, takeSnapshot };
+  window.MM = { SYMS: SYM, OV, OVP, ovRender, snapsCheck, RL, api, S, LEVELS: () => LEVELS, EVENTS: () => EVENTS, OIM, FEEDS, CARDS, MODAL, NET, MD, SYM, fire, openChart, addLevel, calcMetric, buildGrid, SETUP, setupScan, SCARDS, detectKnife, detectSetup, liveBars, SNAPS, DRAWS: () => DRAWS, CHARTS, takeSnapshot };
 }
 init();
 })();
